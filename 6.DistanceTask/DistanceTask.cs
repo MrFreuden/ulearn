@@ -7,15 +7,18 @@ public static class DistanceTask
     public static double GetDistanceToSegment(double ax, double ay, double bx, double by, double x, double y)
     {
         var ABLengthSquared = GetSquaredLength(ax, ay, bx, by);
+        var distanceToA = GetDistance(ax, ay, x, y);
+        var distanceToB = GetDistance(bx, by, x, y);
+
         if (ABLengthSquared == 0)
-            return GetDistance(ax, ay, x, y);
+            return distanceToA;
 
         var t = GetProjection(ax, ay, bx, by, x, y, ABLengthSquared);
 
         if (t < 0)
-            return GetDistance(ax, ay, x, y);
+            return distanceToA;
         else if (t > 1)
-            return GetDistance(bx, by, x, y);
+            return distanceToB;
 
         var Dx = ax + (bx - ax) * t;
         var Dy = ay + (by - ay) * t;
@@ -35,7 +38,7 @@ public static class DistanceTask
         return Math.Sqrt(GetSquaredLength(x1, y1, x2, y2));
     }
 
-    private static double GetProjection(double ax, double ay, double bx, double by, double x, double y, 
+    private static double GetProjection(double ax, double ay, double bx, double by, double x, double y,
         double ABLengthSquared)
     {
         var APx = x - ax;
