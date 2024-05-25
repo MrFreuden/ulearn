@@ -1,54 +1,55 @@
 ﻿using System.Diagnostics;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace TextAnalysis;
 
 static class FrequencyAnalysisTask
 {
+    const int MaxNGrams = 3;
     public static Dictionary<string, string> GetMostFrequentNextWords(List<List<string>> text)
     {
-        var maxNGrams = 3;
         var tempDict = new Dictionary<string, Dictionary<string, int>>();
-        var resultDict = new Dictionary<string, string>();
-        var keyBuilder = new StringBuilder();
+        
         foreach (var sentence in text)
         {
             for (int currentWordIndex = 0; currentWordIndex < sentence.Count - 1; currentWordIndex++)
             {
-                for (int offset = 0; offset < maxNGrams - 1 && offset < sentence.Count - 1 - currentWordIndex; offset++)
-                {
-                    if (offset > 0)
-                        keyBuilder.Append(' ');
-                    keyBuilder.Append(sentence[offset + currentWordIndex]);
-
-                    var key = keyBuilder.ToString();
-                    if (tempDict.ContainsKey(key))
-                    {
-                        if (tempDict[key].ContainsKey(sentence[offset + currentWordIndex + 1]))
-                        {
-                            tempDict[key][sentence[offset + currentWordIndex + 1]] += 1;
-                        }
-                        else
-                        {
-                            tempDict[key].Add(sentence[offset + currentWordIndex + 1], 1);
-                        }
-                    }
-
-                    else
-                    {
-                        tempDict.Add(key, new Dictionary<string, int> {
-                            { sentence[offset + currentWordIndex + 1], 1 }
-                        });
-                    }
-                    
-                }
-                keyBuilder.Clear();
+                MakeNGram(tempDict, sentence, currentWordIndex);
             }
         }
 
-        resultDict = GetMostFrequentWords(tempDict);
+        return GetMostFrequentWords(tempDict);
+    }
 
-        return resultDict;
+    private static void MakeNGram(Dictionary<string, Dictionary<string, int>> tempDict, List<string> words, int index)
+    {
+        var keyBuilder = new StringBuilder();
+        for (int offset = 0; offset < MaxNGrams - 1 && offset < words.Count - 1 - index; offset++)
+        {
+            if (offset > 0)
+                keyBuilder.Append(' ');
+            keyBuilder.Append(words[offset + index]);
+
+            var key = keyBuilder.ToString();
+            if (tempDict.ContainsKey(key))
+            {
+                if (tempDict[key].ContainsKey(words[offset + index + 1]))
+                {
+                    tempDict[key][words[offset + index + 1]] += 1;
+                }
+                else
+                {
+                    tempDict[key].Add(words[offset + index + 1], 1);
+                }
+            }
+
+            else
+            {
+                tempDict.Add(key, new Dictionary<string, int> { { words[offset + index + 1], 1 } } );
+            }
+
+        }
     }
 
     private static Dictionary<string, string> GetMostFrequentWords(Dictionary<string, Dictionary<string, int>> tempDict)
