@@ -7,44 +7,37 @@ static class FrequencyAnalysisTask
 {
     public static Dictionary<string, string> GetMostFrequentNextWords(List<List<string>> text)
     {
-        var st = new Stopwatch();
-        st.Start();
         var maxNGrams = 3;
         var tempDict = new Dictionary<string, Dictionary<string, int>>();
         var resultDict = new Dictionary<string, string>();
         var keyBuilder = new StringBuilder();
         foreach (var sentence in text)
         {
-            //        There's talent ah my goodness yes and a nice talent thirst to prove yourself
             for (int currentWordIndex = 0; currentWordIndex < sentence.Count - 1; currentWordIndex++)
             {
-                for (int offset = 0; offset < sentence.Count - 1 - currentWordIndex; offset++)
+                for (int offset = 0; offset < maxNGrams - 1 && offset < sentence.Count - 1 - currentWordIndex; offset++)
                 {
-                    keyBuilder.AppendJoin(' ', sentence.GetRange(
-                        currentWordIndex, sentence.Count - 1 - offset - currentWordIndex));
-                    //if (offset > 0)
-                    //    keyBuilder.Append(" ");
-                    //keyBuilder.Append(sentence[offset + currentWordIndex]);
-
-
+                    if (offset > 0)
+                        keyBuilder.Append(' ');
+                    keyBuilder.Append(sentence[offset + currentWordIndex]);
 
                     var key = keyBuilder.ToString();
                     if (tempDict.ContainsKey(key))
                     {
-                        if (tempDict[key].ContainsKey(sentence[sentence.Count - 1 - offset]))
+                        if (tempDict[key].ContainsKey(sentence[offset + currentWordIndex + 1]))
                         {
-                            tempDict[key][sentence[sentence.Count - 1 - offset]] += 1;
+                            tempDict[key][sentence[offset + currentWordIndex + 1]] += 1;
                         }
                         else
                         {
-                            tempDict[key].Add(sentence[sentence.Count - 1 - offset], 1);
+                            tempDict[key].Add(sentence[offset + currentWordIndex + 1], 1);
                         }
                     }
 
                     else
                     {
                         tempDict.Add(key, new Dictionary<string, int> {
-                            { sentence[sentence.Count - 1 - offset], 1 }
+                            { sentence[offset + currentWordIndex + 1], 1 }
                         });
                     }
                     
@@ -55,10 +48,6 @@ static class FrequencyAnalysisTask
 
         resultDict = GetMostFrequentWords(tempDict);
 
-        var sortedDictionary = new SortedDictionary<string, string>(resultDict);
-        var s = new Dictionary<string, string>(sortedDictionary);
-        st.Stop();
-        //Console.WriteLine(st.Elapsed.Milliseconds);
         return resultDict;
     }
 
@@ -90,7 +79,6 @@ static class FrequencyAnalysisTask
         }
         return resultDict;
     }
-
 }
 //                                                                                      1 1 1 1 1
 //   /5 4 3 2 1
