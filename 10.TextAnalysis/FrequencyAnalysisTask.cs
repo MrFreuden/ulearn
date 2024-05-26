@@ -7,18 +7,19 @@ static class FrequencyAnalysisTask
     const int MaxNGrams = 3;
     public static Dictionary<string, string> GetMostFrequentNextWords(List<List<string>> text)
     {
-        var tempDict = new Dictionary<string, Dictionary<string, int>>();
+        var ngramFrequencies = new Dictionary<string, Dictionary<string, int>>();
         foreach (var sentence in text)
         {
             for (int currentWordIndex = 0; currentWordIndex < sentence.Count - 1; currentWordIndex++)
             {
-                MakeNGram(tempDict, sentence, currentWordIndex);
+                UpdateNGramFrequencies(ngramFrequencies, sentence, currentWordIndex);
             }
         }
-        return GetMostFrequentWords(tempDict);
+        return GetMostFrequentWords(ngramFrequencies);
     }
 
-    private static void MakeNGram(Dictionary<string, Dictionary<string, int>> tempDict, List<string> words, int index)
+    private static void UpdateNGramFrequencies(Dictionary<string, Dictionary<string, int>> tempDict, 
+        List<string> words, int index)
     {
         var keyBuilder = new StringBuilder();
         for (int offset = 0; offset < MaxNGrams - 1 && offset < words.Count - 1 - index; offset++)
@@ -29,16 +30,16 @@ static class FrequencyAnalysisTask
 
             var key = keyBuilder.ToString();
             var nextWord = words[offset + index + 1];
-            if (!tempDict.TryGetValue(key, out var countDict))
+            if (!tempDict.TryGetValue(key, out var nextWordFrequencies))
             {
-                countDict = new Dictionary<string, int>();
-                tempDict.Add(key, countDict);
+                nextWordFrequencies = new Dictionary<string, int>();
+                tempDict.Add(key, nextWordFrequencies);
             }
             if (!tempDict[key].TryGetValue(nextWord, out var count))
             {
                 count = 0;
             }
-            countDict[nextWord] = count + 1;
+            nextWordFrequencies[nextWord] = count + 1;
         }
     }
 
@@ -48,24 +49,18 @@ static class FrequencyAnalysisTask
         foreach (var dict in tempDict)
         {
             var countDict = dict.Value;
-            string key = "";
-            int max = int.MinValue;
+            string mostFrequentNextWord = "";
+            int maxFrequency = int.MinValue;
             foreach (var item in countDict)
             {
-                if (item.Value > max)
+                if (item.Value > maxFrequency || 
+                    item.Value == maxFrequency && string.CompareOrdinal(mostFrequentNextWord, item.Key) > 0)
                 {
-                    max = item.Value;
-                    key = item.Key;
-                }
-                else if (item.Value == max)
-                {
-                    if (string.CompareOrdinal(key, item.Key) > 0)
-                    {
-                        key = item.Key;
-                    }
+                    maxFrequency = item.Value;
+                    mostFrequentNextWord = item.Key;
                 }
             }
-            resultDict.Add(dict.Key, key);
+            resultDict.Add(dict.Key, mostFrequentNextWord);
         }
         return resultDict;
     }
