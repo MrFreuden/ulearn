@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection.PortableExecutable;
-using System.Text;
+﻿using System.Text;
 
 namespace TextAnalysis;
 
@@ -10,7 +8,6 @@ static class FrequencyAnalysisTask
     public static Dictionary<string, string> GetMostFrequentNextWords(List<List<string>> text)
     {
         var tempDict = new Dictionary<string, Dictionary<string, int>>();
-        
         foreach (var sentence in text)
         {
             for (int currentWordIndex = 0; currentWordIndex < sentence.Count - 1; currentWordIndex++)
@@ -18,7 +15,6 @@ static class FrequencyAnalysisTask
                 MakeNGram(tempDict, sentence, currentWordIndex);
             }
         }
-
         return GetMostFrequentWords(tempDict);
     }
 
@@ -32,23 +28,17 @@ static class FrequencyAnalysisTask
             keyBuilder.Append(words[offset + index]);
 
             var key = keyBuilder.ToString();
-            if (tempDict.ContainsKey(key))
+            var nextWord = words[offset + index + 1];
+            if (!tempDict.TryGetValue(key, out var countDict))
             {
-                if (tempDict[key].ContainsKey(words[offset + index + 1]))
-                {
-                    tempDict[key][words[offset + index + 1]] += 1;
-                }
-                else
-                {
-                    tempDict[key].Add(words[offset + index + 1], 1);
-                }
+                countDict = new Dictionary<string, int>();
+                tempDict.Add(key, countDict);
             }
-
-            else
+            if (!tempDict[key].TryGetValue(nextWord, out var count))
             {
-                tempDict.Add(key, new Dictionary<string, int> { { words[offset + index + 1], 1 } } );
+                count = 0;
             }
-
+            countDict[nextWord] = count + 1;
         }
     }
 
@@ -57,64 +47,26 @@ static class FrequencyAnalysisTask
         var resultDict = new Dictionary<string, string>();
         foreach (var dict in tempDict)
         {
-            var k = dict.Value;
-            var val = dict.Key;
-            string keyQ = "";
+            var countDict = dict.Value;
+            string key = "";
             int max = int.MinValue;
-            foreach (var item in k)
+            foreach (var item in countDict)
             {
                 if (item.Value > max)
                 {
                     max = item.Value;
-                    keyQ = item.Key;
+                    key = item.Key;
                 }
                 else if (item.Value == max)
                 {
-                    if (string.CompareOrdinal(keyQ, item.Key) > 0)
+                    if (string.CompareOrdinal(key, item.Key) > 0)
                     {
-                        keyQ = item.Key;
+                        key = item.Key;
                     }
                 }
             }
-            resultDict.Add(val, keyQ);
+            resultDict.Add(dict.Key, key);
         }
         return resultDict;
     }
 }
-//                                                                                      1 1 1 1 1
-//   /5 4 3 2 1
-
-//public static Dictionary<string, string> GetMostFrequentNextWords(List<List<string>> text)
-//{
-//    var result = new Dictionary<string, string>();
-//    var key = new StringBuilder();
-//    for (int currentSentenceIndex = 0; currentSentenceIndex < text.Count; currentSentenceIndex++)
-//    {
-//        for (int currentWordIndex = 0; currentWordIndex < text[currentSentenceIndex].Count - 1; currentWordIndex++)
-//        {
-//            for (int offset = 0; offset < text[currentSentenceIndex].Count - 1 - currentWordIndex; offset++)
-//            {
-//                for (int innerOffset = 0; innerOffset < offset + 1; innerOffset++)
-//                {
-//                    key.Append(text[currentSentenceIndex][innerOffset + currentWordIndex]);
-//                    if (offset > 0 && innerOffset < offset)
-//                    {
-//                        key.Append(' ');
-//                    }
-//                }
-
-//                if (result.ContainsKey(key.ToString()))
-//                {
-//                    continue;
-//                }
-
-//                else
-//                {
-//                    result.Add(key.ToString(), text[currentSentenceIndex][offset + currentWordIndex + 1]);
-//                }
-//                key.Clear();
-//            }
-//        }
-//    }
-//    return result;
-//}
