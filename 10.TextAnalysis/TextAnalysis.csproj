@@ -13,9 +13,6 @@
         <None Include="*.Initial.*" />
     </ItemGroup>
     <ItemGroup>
-        <None Update="HarryPotterTextTest.txt">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
         <None Update="HarryPotterText.txt">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
