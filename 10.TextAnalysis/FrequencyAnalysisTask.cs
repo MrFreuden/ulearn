@@ -4,7 +4,7 @@ namespace TextAnalysis;
 
 static class FrequencyAnalysisTask
 {
-    const int MaxNGrams = 3;
+    public const int MaxNGrams = 3;
     public static Dictionary<string, string> GetMostFrequentNextWords(List<List<string>> text)
     {
         var ngramFrequencies = new Dictionary<string, Dictionary<string, int>>();
