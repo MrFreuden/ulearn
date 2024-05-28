@@ -11,13 +11,13 @@ public static class GrayscaleTask
         {
             for (int y = 0; y < height; y++)
             {
-                grayscale[x, y] = RGBToGrayscale(original[x, y].R, original[x, y].G, original[x, y].B);
+                grayscale[x, y] = ConvertRGBToGrayscale(original[x, y].R, original[x, y].G, original[x, y].B);
             }
         }
         return grayscale;
 	}
 
-    private static double RGBToGrayscale(double R, double G, double B)
+    private static double ConvertRGBToGrayscale(double R, double G, double B)
     {
         return (0.299 * R + 0.587 * G + 0.114 * B) / 255;
     }
