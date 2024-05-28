@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -16,24 +17,73 @@ public class FieldParserTaskTests
 		}
 	}
 
-	// Скопируйте сюда метод с тестами из предыдущей задачи.
+    [TestCase("text", new[] { "text" })]
+    [TestCase("hello world", new[] { "hello", "world" })]
+    [TestCase("hello   world", new[] { "hello", "world" })]
+    [TestCase("\"\\\"a\\\"\"", new[] { "\"a\"" })]
+    [TestCase("\'\"a\"\'", new[] { "\"a\"" })]
+    [TestCase("\"\'a\\\'\"", new[] { "\'a\'" })]
+    [TestCase("\'\\\'a\\\'\'", new[] { "\'a\'" })]
+    [TestCase("\"text", new[] { "text" })]
+    [TestCase("abc 'feq'", new[] { "abc", "feq" })]
+    [TestCase("abc'feq'", new[] { "abc", "feq" })]
+    [TestCase("'t' e", new[] { "t", "e" })]
+    [TestCase("'t'e", new[] { "t", "e" })]
+    [TestCase("''e", new[] { "", "e" })]
+    [TestCase("'a\\\\'", new[] { "a\\" })]
+    [TestCase(" a", new[] { "a" })]
+    [TestCase("", new string[0])]
+    [TestCase("\' \'", new[] { " " })]
+    [TestCase("\'abc ", new[] { "abc " })]
+    public static void RunTests(string input, string[] expectedOutput)
+    {
+        Test(input, expectedOutput);
+    }
 }
 
 public class FieldsParserTask
 {
-	// При решении этой задаче постарайтесь избежать создания методов, длиннее 10 строк.
-	// Подумайте как можно использовать ReadQuotedField и Token в этой задаче.
 	public static List<Token> ParseLine(string line)
 	{
-		return new List<Token> { ReadQuotedField(line, 0) }; // сокращенный синтаксис для инициализации коллекции.
+		var tokens = new List<Token>();
+        var index = 0;
+        while (index < line.Length)
+        {
+            if (line[index] == ' ')
+            {
+                index++;
+                continue;
+            }
+            else if (IsQuote(line[index]))
+            {
+                tokens.Add(ReadQuotedField(line, index));
+            }
+            else
+            {
+                tokens.Add(ReadField(line, index));
+            }
+            index = tokens[tokens.Count - 1].GetIndexNextToToken();
+        }
+        return tokens;
 	}
+
         
 	private static Token ReadField(string line, int startIndex)
 	{
-		return new Token(line, 0, line.Length);
+        var index = startIndex;
+        while (index < line.Length && (!IsQuote(line[index]) && line[index] != ' '))
+        {
+            index++;
+        }
+		return new Token(line.Substring(startIndex, index - startIndex), startIndex, index - startIndex);
 	}
 
-	public static Token ReadQuotedField(string line, int startIndex)
+    private static bool IsQuote(char c)
+    {
+        return c == '\'' || c == '\"';
+    }
+
+    public static Token ReadQuotedField(string line, int startIndex)
 	{
 		return QuotedFieldTask.ReadQuotedField(line, startIndex);
 	}
