@@ -67,7 +67,6 @@ public class FieldsParserTask
         return tokens;
 	}
 
-        
 	private static Token ReadField(string line, int startIndex)
 	{
         var index = startIndex;
