@@ -42,29 +42,28 @@ internal static class MedianFilterTask
         {
             for (int y = 0; y < height; y++)
             {
-                var neighborhoods = GetNeighborhood(original, x, y, width, height);
+                var neighborhoods = GetNeighborhood(original, x, y);
                 result[x, y] = GetMiddleValue(neighborhoods);
             }
         }
         return result;
     }
 
-    private static List<double> GetNeighborhood(double[,] original, int x, int y, int width, int height)
+    private static List<double> GetNeighborhood(double[,] original, int x, int y)
     {
         var neighborhood = new List<double>();
+        var width = original.GetLength(0);
+        var height = original.GetLength(1);
         for (int i = -1; i < 2; i++)
         {
-            if (x + i == -1 || (x + i == width && i == 1))
-            {
-                continue;
-            }
             for (int j = -1; j < 2; j++)
             {
-                if (y + j == -1 || (y + j == height && j == 1))
+                var newX = x + i;
+                var newY = y + j;
+                if (newX >= 0 && newX < width && newY >= 0 && newY < height)
                 {
-                    continue;
+                    neighborhood.Add(original[newX, newY]);
                 }
-                neighborhood.Add(original[x + i, y + j]);
             }
         }
         return neighborhood;
