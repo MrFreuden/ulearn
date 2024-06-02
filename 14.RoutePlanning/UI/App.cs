@@ -18,8 +18,8 @@ public partial class App
 				yield return testCase;
 
 		// Большие тесты. Реализуйте отсечение перебора, чтобы они проходили быстро
-		// foreach (var testCase in CreateTestCasesForDifficulty(4, false))
-		// 	yield return testCase;
+		foreach (var testCase in CreateTestCasesForDifficulty(4, false))
+			yield return testCase;
 	}
 
 	private static IEnumerable<TestCase> CreateTestCasesForDifficulty(int difficulty, bool pathsMustMatch = true)
