@@ -46,7 +46,7 @@ public static class PathFinderTask
         for (int i = startIndex; i < checkpoints.Length; i++)
         {
             (currentOrder[startIndex], currentOrder[i]) = (currentOrder[i], currentOrder[startIndex]);
-            var newLength = currentLength += PointExtensions.DistanceTo(checkpoints[currentOrder[startIndex - 1]], 
+            var newLength = currentLength + PointExtensions.DistanceTo(checkpoints[currentOrder[startIndex - 1]], 
                                                                             checkpoints[currentOrder[startIndex]]);
             if (newLength < result.BestLength)
                 FindBestPath(checkpoints, startIndex + 1, currentOrder, result, newLength);
