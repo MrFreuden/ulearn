@@ -21,8 +21,9 @@ public class LeftBorderTask
             return left;
         }
         var middle = (left + right) / 2;
-        if (string.Compare(prefix, phrases[middle], StringComparison.InvariantCultureIgnoreCase) < 0
-                || phrases[middle].StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
+        var comparison = string.Compare(prefix, 0, phrases[middle], 0, prefix.Length,
+                                            StringComparison.InvariantCultureIgnoreCase);
+        if (comparison <= 0)
         {
             return GetLeftBorderIndex(phrases, prefix, left, middle);
         }
