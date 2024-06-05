@@ -15,16 +15,23 @@ public class RightBorderTask
 	/// Функция должна быть НЕ рекурсивной
 	/// и работать за O(log(items.Length)*L), где L — ограничение сверху на длину фразы
 	/// </remarks>
-	public static int GetRightBorderIndex(IReadOnlyList<string> phrases, string prefix, int left, int right)
-	{
-		// IReadOnlyList похож на List, но у него нет методов модификации списка.
-		// Этот код решает задачу, но слишком неэффективно. Замените его на бинарный поиск!
-		for (int i = phrases.Count-1; i >= 0; i--)
-		{
-			if (string.Compare(prefix, phrases[i], StringComparison.InvariantCultureIgnoreCase) >= 0 
-			    || phrases[i].StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
-				return i + 1;
-		}
-		return 0;
-	}
+    public static int GetRightBorderIndex(IReadOnlyList<string> phrases, string prefix, int left, int right)
+    {
+        var prefixLength = prefix.Length;
+        while (left < right - 1)
+        {
+            var middle = (left + right) / 2;
+            var comparison = string.Compare(prefix, 0, phrases[middle], 0, prefixLength, 
+                                            StringComparison.InvariantCultureIgnoreCase);
+            if (comparison >= 0)
+            {
+				left = middle;
+            }
+            else
+            {
+                right = middle;
+            }
+        }
+        return right;
+    }
 }
