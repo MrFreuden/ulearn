@@ -20,7 +20,7 @@ public class RightBorderTask
         var prefixLength = prefix.Length;
         while (left < right - 1)
         {
-            var middle = (left + right) / 2;
+            var middle = left + (right - left) / 2;
             var comparison = string.Compare(prefix, 0, phrases[middle], 0, prefixLength, 
                                             StringComparison.InvariantCultureIgnoreCase);
             if (comparison >= 0)
