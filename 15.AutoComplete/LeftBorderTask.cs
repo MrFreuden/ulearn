@@ -20,7 +20,7 @@ public class LeftBorderTask
         {
             return left;
         }
-        var middle = (left + right) / 2;
+        var middle = left + (right - left) / 2;
         var comparison = string.Compare(prefix, 0, phrases[middle], 0, prefix.Length,
                                             StringComparison.InvariantCultureIgnoreCase);
         if (comparison <= 0)
