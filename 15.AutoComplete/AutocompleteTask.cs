@@ -30,8 +30,18 @@ internal class AutocompleteTask
 	/// <remarks>Эта функция должна работать за O(log(n) + count)</remarks>
 	public static string[] GetTopByPrefix(IReadOnlyList<string> phrases, string prefix, int count)
 	{
-		// тут стоит использовать написанный ранее класс LeftBorderTask
-		return null;
+        var indexLeftBorder = LeftBorderTask.GetLeftBorderIndex(phrases, prefix, -1, phrases.Count);
+        var totalCount = GetCountByPrefix(phrases, prefix);
+
+        if (totalCount < count)
+            count = totalCount;
+
+        var result = new string[count];
+        for (int i = 0; i < count; i++)
+        {
+            result[i] = phrases[indexLeftBorder + 1 + i];
+        }
+        return result;
 	}
 
 	/// <returns>
@@ -39,8 +49,13 @@ internal class AutocompleteTask
 	/// </returns>
 	public static int GetCountByPrefix(IReadOnlyList<string> phrases, string prefix)
 	{
-		// тут стоит использовать написанные ранее классы LeftBorderTask и RightBorderTask
-		return -1;
+        if (string.IsNullOrEmpty(prefix))
+        {
+            return phrases.Count;
+        }
+		var indexLeftBorder = LeftBorderTask.GetLeftBorderIndex(phrases, prefix, -1, phrases.Count);
+        var indexRightBorder = RightBorderTask.GetRightBorderIndex(phrases, prefix, -1, phrases.Count);
+        return indexRightBorder - indexLeftBorder - 1;
 	}
 }
 
@@ -50,18 +65,92 @@ public class AutocompleteTests
 	[Test]
 	public void TopByPrefix_IsEmpty_WhenNoPhrases()
 	{
-		// ...
-		//CollectionAssert.IsEmpty(actualTopWords);
-	}
+        var count = 2;
+        var phrases = new List<string>();
+        var prefix = "a";
+        var actualTopWords = AutocompleteTask.GetTopByPrefix(phrases, prefix, count);
+        CollectionAssert.IsEmpty(actualTopWords);
+    }
 
-	// ...
+    [Test]
+    public void TopByPrefix_IsEmpty_WhenNoPrefix()
+    {
+        var count = 0;
+        var phrases = new List<string>() { "aa", "ab", "bb" };
+        var prefix = "";
+        var actualTopWords = AutocompleteTask.GetTopByPrefix(phrases, prefix, count);
+        CollectionAssert.IsEmpty(actualTopWords);
+    }
 
-	[Test]
-	public void CountByPrefix_IsTotalCount_WhenEmptyPrefix()
+    [Test]
+    public void TopByPrefix_ReturnsCorrectPhrases_WhenPrefixIsA()
+    {
+        var count = 2;
+        var phrases = new List<string>() { "aa", "ab", "bb" };
+        var prefix = "a";
+        var expectedTopWords = new List<string>() { "aa", "ab" };
+        var actualTopWords = AutocompleteTask.GetTopByPrefix(phrases, prefix, count);
+        CollectionAssert.AreEqual(expectedTopWords, actualTopWords);
+    }
+
+    [Test]
+    public void TopByPrefix_ReturnsCorrectPhrases_WhenCountIsGreaterThanNumberOfMatches()
+    {
+        var count = 3;
+        var phrases = new List<string>() { "aa", "ab", "bb" };
+        var prefix = "a";
+        var expectedTopWords = new List<string>() { "aa", "ab" };
+        var actualTopWords = AutocompleteTask.GetTopByPrefix(phrases, prefix, count);
+        CollectionAssert.AreEqual(expectedTopWords, actualTopWords);
+    }
+
+    [Test]
+	public void CountByPrefix_ReturnsPhrasesLength_WhenEmptyPrefix()
 	{
-		// ...
-		//Assert.AreEqual(expectedCount, actualCount);
-	}
+        var expectedCount = 3;
+        var phrases = new List<string>() { "aa", "ab", "bb" };
+        var prefix = "";
+        var actualCount = AutocompleteTask.GetCountByPrefix(phrases, prefix);
+        Assert.AreEqual(expectedCount, actualCount);
+    }
 
-	// ...
+    [Test]
+    public void CountByPrefix_ReturnsZero_WhenEmptyPhrases()
+    {
+        var expectedCount = 0;
+        var phrases = new List<string>();
+        var prefix = "a";
+        var actualCount = AutocompleteTask.GetCountByPrefix(phrases, prefix);
+        Assert.AreEqual(expectedCount, actualCount);
+    }
+
+    [Test]
+    public void CountByPrefix_ReturnsCorrectCount_WhenPrefixIsA()
+    {
+		var expectedCount = 2;
+		var phrases = new List<string>() { "aa", "ab", "bb" };
+		var prefix = "a";
+		var actualCount = AutocompleteTask.GetCountByPrefix(phrases, prefix);
+        Assert.AreEqual(expectedCount, actualCount);
+    }
+
+    [Test]
+    public void CountByPrefix_ReturnsZero_WhenPrefixDoesNotMatchAnyPhrase()
+    {
+        var expectedCount = 0;
+        var phrases = new List<string>() { "aa", "ab", "bb" };
+        var prefix = "c";
+        var actualCount = AutocompleteTask.GetCountByPrefix(phrases, prefix);
+        Assert.AreEqual(expectedCount, actualCount);
+    }
+
+    [Test]
+    public void CountByPrefix_ReturnsZero_WhenPrefixIsLongerThanAnyPhrase()
+    {
+        var expectedCount = 0;
+        var phrases = new List<string>() { "aa", "ab", "bb" };
+        var prefix = "abc";
+        var actualCount = AutocompleteTask.GetCountByPrefix(phrases, prefix);
+        Assert.AreEqual(expectedCount, actualCount);
+    }
 }
