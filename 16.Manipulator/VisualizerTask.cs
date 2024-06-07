@@ -44,8 +44,12 @@ public static class VisualizerTask
 
 	public static void MouseMove(Visual visual, PointerEventArgs e)
 	{
-		// TODO: Измените X и Y пересчитав координаты (e.X, e.Y) в логические.
-
+		var pointerPos = e.GetPosition(visual);
+		var shoulderPos = GetShoulderPos(visual);
+		var mathPoint = ConvertWindowToMath(pointerPos, shoulderPos);
+		X = mathPoint.X; 
+		Y = mathPoint.Y;
+		
 		UpdateManipulator();
 		visual.InvalidateVisual();
 	}
