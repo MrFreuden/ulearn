@@ -56,8 +56,7 @@ public static class VisualizerTask
 
 	public static void MouseWheel(Visual visual, PointerWheelEventArgs e)
 	{
-		// TODO: Измените Alpha, используя e.Delta.Y — размер прокрутки колеса мыши
-
+		Alpha += e.Delta.Y;
 		UpdateManipulator();
 		visual.InvalidateVisual();
 	}
