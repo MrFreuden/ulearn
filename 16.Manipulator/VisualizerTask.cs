@@ -22,9 +22,24 @@ public static class VisualizerTask
 
 	public static void KeyDown(Visual visual, KeyEventArgs key)
 	{
-		// TODO: Добавьте реакцию на QAWS и пересчитывать Wrist
-
-		visual.InvalidateVisual(); // вызывает перерисовку канваса
+		var step = Math.PI / 360;
+        switch (key.Key)
+		{
+			case Key.Q:
+				Shoulder += step;
+				break;
+            case Key.A:
+                Shoulder -= step;
+                break;
+            case Key.W:
+                Elbow += step;
+                break;
+            case Key.S:
+                Elbow -= step;
+                break;
+        }
+		Wrist = - Alpha - Shoulder - Elbow;
+		visual.InvalidateVisual();
 	}
 
 	public static void MouseMove(Visual visual, PointerEventArgs e)
