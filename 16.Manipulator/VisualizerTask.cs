@@ -37,6 +37,8 @@ public static class VisualizerTask
             case Key.S:
                 Elbow -= step;
                 break;
+			default:
+				break;
         }
 		Wrist = - Alpha - Shoulder - Elbow;
 		visual.InvalidateVisual();
@@ -78,26 +80,45 @@ public static class VisualizerTask
 		var joints = AnglesToCoordinatesTask.GetJointPositions(Shoulder, Elbow, Wrist);
 
 		DrawReachableZone(context, ReachableAreaBrush, UnreachableAreaBrush, shoulderPos, joints);
+		DrawFormattedText(context);
+		DrawLinesBetweenJoints(context, shoulderPos, joints);
+		DrawJoints(context, shoulderPos, joints);
+    }
 
-		var formattedText = new FormattedText(
-			$"X={X:0}, Y={Y:0}, Alpha={Alpha:0.00}",
-			CultureInfo.InvariantCulture,
-			FlowDirection.LeftToRight,
-			Typeface.Default,
-			18,
-			Brushes.DarkRed
-		)
-		{
-			TextAlignment = TextAlignment.Center
-		};
-		context.DrawText(formattedText, new Point(10, 10));
+	private static void DrawFormattedText(DrawingContext context)
+	{
+        var formattedText = new FormattedText(
+            $"X={X:0}, Y={Y:0}, Alpha={Alpha:0.00}",
+            CultureInfo.InvariantCulture,
+            FlowDirection.LeftToRight,
+            Typeface.Default,
+            18,
+            Brushes.DarkRed
+        )
+        {
+            TextAlignment = TextAlignment.Center
+        };
+        context.DrawText(formattedText, new Point(10, 10));
+    }
 
-		// Нарисуйте сегменты манипулятора методом ccontext.DrawLine(ManipulatorPen, ...)
-		// Нарисуйте суставы манипулятора окружностями методом context.DrawEllipse(JointBrush, null, ...)
-		// Не забудьте сконвертировать координаты из логических в оконные
-	}
+    private static void DrawJoints(DrawingContext context, Point shoulderPos, Point[] joints)
+    {
+        double jointRadius = 5;
+        foreach (var joint in joints)
+        {
+            var windowPoint = ConvertMathToWindow(joint, shoulderPos);
+            context.DrawEllipse(JointBrush, null, windowPoint, jointRadius, jointRadius);
+        }
+    }
 
-	private static void DrawReachableZone(
+    private static void DrawLinesBetweenJoints(DrawingContext context, Point shoulderPos, Point[] joints)
+    {
+        context.DrawLine(ManipulatorPen, ConvertMathToWindow(new Point(0, 0), shoulderPos), ConvertMathToWindow(joints[0], shoulderPos));
+        context.DrawLine(ManipulatorPen, ConvertMathToWindow(joints[0], shoulderPos), ConvertMathToWindow(joints[1], shoulderPos));
+        context.DrawLine(ManipulatorPen, ConvertMathToWindow(joints[1], shoulderPos), ConvertMathToWindow(joints[2], shoulderPos));
+    }
+
+    private static void DrawReachableZone(
 		DrawingContext context,
 		Brush reachableBrush,
 		Brush unreachableBrush,
