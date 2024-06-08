@@ -63,8 +63,14 @@ public static class VisualizerTask
 
 	public static void UpdateManipulator()
 	{
-		// Вызовите ManipulatorTask.MoveManipulatorTo и обновите значения полей Shoulder, Elbow и Wrist, 
-		// если они не NaN. Это понадобится для последней задачи.
+		var angles = ManipulatorTask.MoveManipulatorTo(X, Y, Alpha);
+		var containsNaN = Array.Exists(angles, double.IsNaN);
+		if (!containsNaN)
+		{
+			Shoulder = angles[0];
+			Elbow = angles[1];
+			Wrist = angles[2];
+		}
 	}
 
 	public static void DrawManipulator(DrawingContext context, Point shoulderPos)
