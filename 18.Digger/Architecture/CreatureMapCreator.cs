@@ -23,11 +23,6 @@ public static class CreatureMapCreator
 
 	private static ICreature CreateCreatureByTypeName(string name)
 	{
-		// Это использование механизма рефлексии. 
-		// Ему посвящена одна из последних лекций второй части курса Основы программирования
-		// В обычном коде можно было обойтись без нее, но нам нужно было написать такой код,
-		// который работал бы, даже если вы ещё не создали класс Monster или Gold. 
-		// Просто написать new Gold() мы не могли, потому что это не скомпилировалось бы до создания класса Gold.
 		if (!factory.ContainsKey(name))
 		{
 			var type = Assembly
