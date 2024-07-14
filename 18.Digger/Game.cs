@@ -24,11 +24,17 @@ TSTSTT TT";
 
     private const string test = @"
 TSTGTT TS
-T T  TSTT
-T TTTTSTT
+TTT  TSTT
+T  MTTSTT
 T TSTS TT
 TPTTTG ST
 TSTSTT TT";
+
+    private const string testMini = @"
+MPM
+TMT
+  M
+T T";
 
     private const string mapWithPlayerTerrainSackGoldMonster = @"
 PTTGTT TST
@@ -52,6 +58,6 @@ S TTST  TG
 
 	public static void CreateMap()
 	{
-		Map = CreatureMapCreator.CreateMap(test);
+		Map = CreatureMapCreator.CreateMap(mapWithPlayerTerrainSackGoldMonster);
 	}
 }
