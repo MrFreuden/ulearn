@@ -9,13 +9,6 @@ namespace Digger
 {
     public static class GameFieldHelper
     {
-        enum Direction
-        {
-            Left = -1,
-            Right = 1,
-            Up = -1,
-            Down = 1,
-        }
         public static bool IsWithinMapBounds(int x, int y) =>
       x >= 0 && x < Game.MapWidth && y >= 0 && y < Game.MapHeight;
 
