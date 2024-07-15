@@ -5,8 +5,8 @@ namespace Digger;
 
 public class Node
 {
-    public int X { get; set; }
     public int Y { get; set; }
+    public int X { get; set; }
     public int Distance { get; set; }
     public Node? Parent { get; set; }
 }
@@ -31,21 +31,21 @@ public static class BFS
         var visited = FillVisited();
         var queue = new Queue<Node>();
         queue.Enqueue(start);
-        visited[start.X][start.Y] = true;
+        visited[start.Y][start.X] = true;
 
         while (queue.Count > 0)
         {
             var current = queue.Dequeue();
 
-            if (Game.Map[current.Y, current.X] is Player && current.Distance != 0)
+            if (Game.Map[current.X, current.Y] is Player && current.Distance != 0)
             {
                 return current;
             }
 
-            EnqueueIfValid(current.X - 1, current.Y, current, visited, queue);
-            EnqueueIfValid(current.X + 1, current.Y, current, visited, queue);
-            EnqueueIfValid(current.X, current.Y - 1, current, visited, queue);
-            EnqueueIfValid(current.X, current.Y + 1, current, visited, queue);
+            EnqueueIfValid(current.Y - 1, current.X, current, visited, queue);
+            EnqueueIfValid(current.Y + 1, current.X, current, visited, queue);
+            EnqueueIfValid(current.Y, current.X - 1, current, visited, queue);
+            EnqueueIfValid(current.Y, current.X + 1, current, visited, queue);
         }
         return null;
     }
@@ -54,7 +54,7 @@ public static class BFS
     {
         if (GameFieldHelper.IsWithinMapBounds(x, y) && !visited[x][y])
         {
-            queue.Enqueue(new Node { X = x, Y = y, Distance = current.Distance + 1, Parent = current });
+            queue.Enqueue(new Node { Y = x, X = y, Distance = current.Distance + 1, Parent = current });
             visited[x][y] = true;
         }
     }

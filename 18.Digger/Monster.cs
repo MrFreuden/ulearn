@@ -7,18 +7,18 @@ public class Monster : ICreature, IMovementBlockerMonster
     public CreatureCommand Act(int x, int y)
     {
         var nextPosition = FindWay(x, y);
-        var deltaX = nextPosition.Y - x;
-        var deltaY = nextPosition.X - y;
+        var deltaX = nextPosition.X - x;
+        var deltaY = nextPosition.Y - y;
 
         return new CreatureCommand() { DeltaX = deltaX, DeltaY = deltaY };
     }
 
     private Node FindWay(int x, int y)
     {
-        var node = BFS.Bfs(new Node { Y = x, X = y });
+        var node = BFS.Bfs(new Node { X = x, Y = y });
         if (node == null)
         {
-            return new Node { Y = x, X = y };
+            return new Node { X = x, Y = y };
         }
         while (node.Parent.Parent != null)
         {
