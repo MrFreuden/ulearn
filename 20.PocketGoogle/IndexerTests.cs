@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using PocketGoogle;
+using System.Collections.Generic;
 using System.Linq;
 namespace PocketGoogleTests
 {
@@ -11,6 +12,41 @@ namespace PocketGoogleTests
         public void Setup()
         {
             indexer = new Indexer();
+        }
+
+        [Test]
+        public void GetPositions_WithRussianText_ReturnsExpectedPositions()
+        {
+            // Arrange
+            string text = "Я, шел, по: мосткам, и вдруг – Там, в глубине потока, Сквозят водяные цветы.";
+            indexer.Add(1, text);
+
+            // Define test cases
+            var testCases = new Dictionary<string, List<int>>
+                {
+                    { "Я", new List<int> { 0 } },
+                    { "шел", new List<int> { 3 } },
+                    { "по", new List<int> { 8 } },
+                    { "мосткам", new List<int> { 12 } },
+                    { "и", new List<int> { 21 } },
+                    { "вдруг", new List<int> { 23 } },
+                    { "Там", new List<int> { 31 } },
+                    { "в", new List<int> { 36 } },
+                    { "глубине", new List<int> { 38 } },
+                    { "потока", new List<int> { 46 } },
+                    { "Сквозят", new List<int> { 54 } },
+                    { "водяные", new List<int> { 62 } },
+                    { "цветы", new List<int> { 70 } }
+                };
+
+            foreach (var testCase in testCases)
+            {
+                // Act
+                var positions = indexer.GetPositions(1, testCase.Key);
+
+                // Assert
+                Assert.AreEqual(testCase.Value, positions, $"Failed for word: {testCase.Key}");
+            }
         }
 
         [Test]
