@@ -99,21 +99,21 @@ namespace PocketGoogle
 
         public List<int> GetPositions(int id)
         {
-            if (HadId(id))
+            if (HasId(id))
             {
                 return _idAndPositions[id].ToList();
             }
             return new List<int>();
         }
 
-        public bool HadId(int id)
+        public bool HasId(int id)
         {
             return _idAndPositions.ContainsKey(id);
         }
 
         public void RemoveId(int id)
         {
-            if (HadId(id))
+            if (HasId(id))
             {
                 _idAndPositions.Remove(id);
             }
