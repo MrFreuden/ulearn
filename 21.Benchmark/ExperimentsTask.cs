@@ -9,10 +9,14 @@ public class Experiments
 	{
 		var classesTimes = new List<ExperimentResult>();
 		var structuresTimes = new List<ExperimentResult>();
-            
-		//...
 
-		return new ChartData
+        foreach (var fieldCount in Constants.FieldCounts)
+        {
+			classesTimes.Add(new ExperimentResult(fieldCount, benchmark.MeasureDurationInMs(new ClassArrayCreationTask(fieldCount), repetitionsCount)));
+			structuresTimes.Add(new ExperimentResult(fieldCount, benchmark.MeasureDurationInMs(new StructArrayCreationTask(fieldCount), repetitionsCount)));
+        }
+
+        return new ChartData
 		{
 			Title = "Create array",
 			ClassPoints = classesTimes,
@@ -25,10 +29,15 @@ public class Experiments
 	{
 		var classesTimes = new List<ExperimentResult>();
 		var structuresTimes = new List<ExperimentResult>();
-            
-		//...
 
-		return new ChartData
+
+		foreach (var fieldCount in Constants.FieldCounts)
+        {
+            classesTimes.Add(new ExperimentResult(fieldCount, benchmark.MeasureDurationInMs(new MethodCallWithClassArgumentTask(fieldCount), repetitionsCount)));
+            structuresTimes.Add(new ExperimentResult(fieldCount, benchmark.MeasureDurationInMs(new MethodCallWithStructArgumentTask(fieldCount), repetitionsCount)));
+        }
+
+        return new ChartData
 		{
 			Title = "Call method with argument",
 			ClassPoints = classesTimes,
