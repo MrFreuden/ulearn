@@ -7,8 +7,9 @@ public class ListModel<TItem>
 {
 	public List<TItem> Items { get; }
 	public int UndoLimit;
-        
-	public ListModel(int undoLimit) : this(new List<TItem>(), undoLimit)
+    private LimitedSizeStack<Action> _undoActions;
+
+    public ListModel(int undoLimit) : this(new List<TItem>(), undoLimit)
 	{
 	}
 
@@ -16,25 +17,32 @@ public class ListModel<TItem>
 	{
 		Items = items;
 		UndoLimit = undoLimit;
-	}
+        _undoActions = new LimitedSizeStack<Action>(undoLimit);
+    }
 
 	public void AddItem(TItem item)
 	{
 		Items.Add(item);
-	}
+        _undoActions.Push(() => Items.RemoveAt(Items.Count - 1));
+    }
 
 	public void RemoveItem(int index)
-	{
-		Items.RemoveAt(index);
-	}
+    {
+        var removedItem = Items[index];
+        Items.RemoveAt(index);
+        _undoActions.Push(() => Items.Insert(index, removedItem));
+    }
 
 	public bool CanUndo()
 	{
-		return false;
-	}
+		return _undoActions.Count > 0;
+    }
 
 	public void Undo()
 	{
-		throw new NotImplementedException();
-	}
+		if (CanUndo())
+		{
+            _undoActions.Pop().Invoke();
+        }
+    }
 }
