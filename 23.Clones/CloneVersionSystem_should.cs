@@ -78,7 +78,87 @@ public class CloneVersionSystem_should
 		Assert.AreEqual(new[] { "5", "7", "basic" }, res);
 	}
 
-	private List<string> Execute(params string[] queries)
+    [Test]
+    public void MassiveCloneTest()
+    {
+        var cvs = Factory.CreateCVS();
+        cvs.Execute("learn 1 100"); // Начальная команда для клона 1
+
+        int i = 0;
+        for (; i < 1000000; i++)
+        {
+            cvs.Execute($"clone 1"); // Клонируем клон 1
+        }
+
+        // Проверяем, что все клоны созданы и содержат правильные данные
+        for (int j = 2; j <= i + 1; j++)
+        {
+            var result = cvs.Execute($"check {j}");
+            Assert.AreEqual("100", result, $"Клон {j} должен содержать программу 100");
+        }
+    }
+
+    [Test]
+    public void MassiveCloneTest2()
+    {
+        var cvs = Factory.CreateCVS();
+
+        int i = 0;
+        for (; i < 100000; i++)
+        {
+            cvs.Execute($"learn 1 {i}");
+        }
+
+
+        var result = cvs.Execute($"check 1");
+        Assert.AreEqual("99999", result);
+
+    }
+
+    [Test]
+    public void MassiveClone1()
+    {
+        var res = Execute("learn 1 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "check 2",
+        "check 3",
+        "check 4",
+        "check 5",
+        "check 6");
+        Assert.AreEqual(new[] { "1", "1", "1", "1", "1" }, res);
+    }
+
+    [Test]
+    public void MassiveClone2()
+    {
+        var res = Execute("clone 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "check 1",
+        "check 2",
+        "check 3",
+        "check 4",
+        "check 5");
+        Assert.AreEqual(new[] { "basic", "basic", "basic", "basic", "basic" }, res);
+    }
+
+    [Test]
+    public void MassiveClone3()
+    {
+        var res = Execute("learn 1 37",
+        "learn 2 45",
+        "clone 1",
+        "check 3");
+        Assert.AreEqual(new[] { "37" }, res);
+    }
+
+    private List<string> Execute(params string[] queries)
 	{
 		var cvs = Factory.CreateCVS();
 		var results = new List<string>();
