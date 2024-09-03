@@ -1,32 +1,44 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace yield;
 
 public static class MovingMaxTask
 {
-	public static IEnumerable<DataPoint> MovingMax(this IEnumerable<DataPoint> data, int windowWidth)
-	{
+    public static IEnumerable<DataPoint> MovingMax(this IEnumerable<DataPoint> data, int windowWidth)
+    {
         Queue<double> window = new();
-        double? maxValue = null;
+        LinkedList<double> maxValueApplicants = new();
 
         foreach (var item in data)
         {
             window.Enqueue(item.OriginalY);
-            if (maxValue == null)
-            {
-                maxValue = item.OriginalY;
-            }
+
             if (window.Count > windowWidth)
             {
-                window.Dequeue();
-                maxValue = window.Max();
+                RemoveOldestElement(window, maxValueApplicants);
             }
 
-            var max = maxValue.Value > item.OriginalY ? maxValue.Value : item.OriginalY;
-            maxValue = max;
-            yield return item.WithMaxY(max);
+            UpdateMaxValueApplicants(maxValueApplicants, item.OriginalY);
+
+            yield return item.WithMaxY(maxValueApplicants.First.Value);
         }
+    }
+
+    private static void RemoveOldestElement(Queue<double> window, LinkedList<double> maxValueApplicants)
+    {
+        var removed = window.Dequeue();
+        if (removed == maxValueApplicants.First.Value)
+        {
+            maxValueApplicants.RemoveFirst();
+        }
+    }
+
+    private static void UpdateMaxValueApplicants(LinkedList<double> maxValueApplicants, double newValue)
+    {
+        while (maxValueApplicants.Count > 0 && maxValueApplicants.Last.Value < newValue)
+        {
+            maxValueApplicants.RemoveLast();
+        }
+        maxValueApplicants.AddLast(newValue);
     }
 }
