@@ -133,29 +133,42 @@ public class CloneVersionSystem_should
     }
 
     [Test]
-    public void MassiveClone2()
+    public void ExecuteSample2()
     {
-        var res = Execute("clone 1",
-        "clone 1",
-        "clone 1",
-        "clone 1",
-        "clone 1",
-        "check 1",
-        "check 2",
-        "check 3",
-        "check 4",
-        "check 5");
-        Assert.AreEqual(new[] { "basic", "basic", "basic", "basic", "basic" }, res);
+        var res = Execute("learn 1 111",
+            "learn 1 222",
+            "learn 1 333",
+            "rollback 1",
+            "rollback 1",
+            "clone 1",
+            "relearn 2",
+            "relearn 2",
+            "check 1",
+            "check 2");
+        Assert.AreEqual(new[] { "111", "333" }, res);
     }
-
     [Test]
-    public void MassiveClone3()
+    public void ExecuteSample3()
     {
-        var res = Execute("learn 1 37",
-        "learn 2 45",
-        "clone 1",
-        "check 3");
-        Assert.AreEqual(new[] { "37" }, res);
+        var res = Execute("learn 1 1",
+            "learn 1 2",
+            "learn 1 3",
+            "rollback 1",
+            "rollback 1",
+            "clone 1",
+            "clone 2",
+            "relearn 2",
+            "relearn 2",
+            "check 1",
+            "check 2",
+            "relearn 3",
+            "check 3",
+            "rollback 3",
+            "check 3",
+            "relearn 3",
+            "relearn 3",
+            "check 3");
+        Assert.AreEqual(new[] { "1", "3", "2", "1", "3" }, res);
     }
 
     private List<string> Execute(params string[] queries)
