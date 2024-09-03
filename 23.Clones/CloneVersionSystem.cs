@@ -20,8 +20,9 @@ public class CloneVersionSystem : ICloneVersionSystem
 
         switch (queryArguments[0])
         {
-            case "check":
-                return _clones[cloneNumber].Check();
+            case "clone":
+                _clones.Add(new Clone(_clones[cloneNumber]));
+                return null;
 
             case "learn":
                 var programNumber = int.Parse(queryArguments[2]);
@@ -36,11 +37,55 @@ public class CloneVersionSystem : ICloneVersionSystem
                 _clones[cloneNumber].Relearn();
                 return null;
 
-            case "clone":
-                _clones.Add(new Clone(_clones[cloneNumber]));
-                return null;
+            case "check":
+                return _clones[cloneNumber].Check();
         }
         return null;
+    }
+}
+
+public class Clone
+{
+    private readonly ListStack<int> _learnedPrograms;
+    private readonly ListStack<int> _rollBackPrograms;
+
+    public Clone()
+    {
+        _learnedPrograms = new();
+        _rollBackPrograms = new();
+    }
+
+    public Clone(Clone originalClone)
+    {
+        _learnedPrograms = new ListStack<int>(originalClone._learnedPrograms);
+        _rollBackPrograms = new ListStack<int>(originalClone._rollBackPrograms);
+    }
+
+    public void Learn(int programId)
+    {
+        _rollBackPrograms.Clear();
+        _learnedPrograms.Push(programId);
+    }
+
+    public void RollBack()
+    {
+        if (!_learnedPrograms.IsEmpty)
+        {
+            _rollBackPrograms.Push(_learnedPrograms.Pop());
+        }
+    }
+
+    public void Relearn()
+    {
+        if (!_rollBackPrograms.IsEmpty)
+        {
+            _learnedPrograms.Push(_rollBackPrograms.Pop());
+        }
+    }
+
+    public string Check()
+    {
+        return _learnedPrograms.IsEmpty ? "basic" : _learnedPrograms.Peek().ToString();
     }
 }
 
@@ -89,49 +134,4 @@ public class StackItem<T>
 {
     public T Value { get; set; }
     public StackItem<T> Next { get; set; }
-}
-
-public class Clone
-{
-    private readonly ListStack<int> _learnedPrograms;
-    private readonly ListStack<int> _rollBackPrograms;
-
-    public Clone()
-    {
-        _learnedPrograms = new();
-        _rollBackPrograms = new();
-    }
-
-    public Clone(Clone originalClone)
-    {
-        _learnedPrograms = new ListStack<int>(originalClone._learnedPrograms);
-        _rollBackPrograms = new ListStack<int>(originalClone._rollBackPrograms);
-    }
-
-    public void Learn(int programId)
-    {
-        _rollBackPrograms.Clear();
-        _learnedPrograms.Push(programId);
-    }
-
-    public void RollBack()
-    {
-        if (!_learnedPrograms.IsEmpty)
-        {
-            _rollBackPrograms.Push(_learnedPrograms.Pop());
-        }
-    }
-
-    public void Relearn()
-    {
-        if (!_rollBackPrograms.IsEmpty)
-        {
-            _learnedPrograms.Push(_rollBackPrograms.Pop());
-        }
-    }
-
-    public string Check()
-    {
-        return _learnedPrograms.IsEmpty ? "basic" : _learnedPrograms.Peek().ToString();
-    }
 }
