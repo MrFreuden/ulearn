@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System;
 using System.Linq;
 using NUnit.Framework;
 
@@ -54,7 +56,43 @@ public class MovingMaxTests
 		CheckMax(100500, new double[] { 1, 2, 5, 1, 0, 6 }, new double[] { 1, 2, 5, 5, 5, 6 });
 	}
 
-	private void CheckMax(int windowWidth, double[] ys, double[] expectedYs)
+    [Test]
+    public void TestMovingMaxOnLargeData()
+    {
+        int dataSize = 100000;
+        int windowWidth = 100;
+        var random = new Random();
+        var data = new List<double>();
+
+        for (int i = 0; i < dataSize; i++)
+        {
+            data.Add(random.NextDouble() * 1000);
+        }
+
+        var expectedMax = new double[dataSize];
+        var deque = new LinkedList<int>();
+
+        for (int i = 0; i < dataSize; i++)
+        {
+            if (deque.Count > 0 && deque.First.Value <= i - windowWidth)
+            {
+                deque.RemoveFirst();
+            }
+
+            while (deque.Count > 0 && data[deque.Last.Value] <= data[i])
+            {
+                deque.RemoveLast();
+            }
+
+            deque.AddLast(i);
+
+            expectedMax[i] = data[deque.First.Value];
+        }
+
+        CheckMax(windowWidth, data.ToArray(), expectedMax);
+    }
+
+    private void CheckMax(int windowWidth, double[] ys, double[] expectedYs)
 	{
 		var dataPoints = ys.Select((v, index) => new DataPoint(GetX(index), v));
 		var actual = Factory.CreateAnalyzer().MovingMax(dataPoints, windowWidth).ToList();
