@@ -3,28 +3,57 @@ using System.Text;
 
 namespace hashes;
 
-public class GhostsTask : 
-	IFactory<Document>, IFactory<Vector>, IFactory<Segment>, IFactory<Cat>, IFactory<Robot>, 
-	IMagic
+public class GhostsTask :
+    IFactory<Document>, IFactory<Vector>, IFactory<Segment>, IFactory<Cat>, IFactory<Robot>,
+    IMagic
 {
-	public void DoMagic()
-	{
-	}
+    private Vector _vector;
+    private Segment _segment;
+    private Document _document;
+    private Cat _cat;
+    private Robot _robot;
+    private byte[] _content;
 
-	// Чтобы класс одновременно реализовывал интерфейсы IFactory<A> и IFactory<B> 
-	// придется воспользоваться так называемой явной реализацией интерфейса.
-	// Чтобы отличать методы создания A и B у каждого метода Create нужно явно указать, к какому интерфейсу он относится.
-	// На самом деле такое вы уже видели, когда реализовывали IEnumerable<T>.
+    public void DoMagic()
+    {
+        _vector ??= ((IFactory<Vector>)this).Create();
+        _vector.Add(new Vector(2.2, 2.2));
 
-	Vector IFactory<Vector>.Create()
-	{
-		throw new NotImplementedException();
-	}
+        _segment ??= ((IFactory<Segment>)this).Create();
+        _segment.Start.Add(_vector);
 
-	Segment IFactory<Segment>.Create()
-	{
-		throw new NotImplementedException();
-	}
+        _document ??= ((IFactory<Document>)this).Create();
+        _content[0] = 111;
 
-	// И так даллее по аналогии...
+        _cat ??= ((IFactory<Cat>)this).Create();
+        _cat.Rename("AAA");
+
+        _robot ??= ((IFactory<Robot>)this).Create();
+        Robot.BatteryCapacity *= DateTime.Now.Month;
+    }
+
+    Vector IFactory<Vector>.Create()
+    {
+        return _vector ??= new Vector(1.2, 1.1);
+    }
+
+    Segment IFactory<Segment>.Create()
+    {
+        return _segment ??= new Segment(new Vector(1.1, 1.1), new Vector(2.1, 2.1));
+    }
+
+    Document IFactory<Document>.Create()
+    {
+        return _document ??= new Document("Test", Encoding.UTF8, _content ??= new byte[1]);
+    }
+
+    Cat IFactory<Cat>.Create()
+    {
+        return _cat ??= new Cat("Test", "TestBreed", DateTime.Now);
+    }
+
+    Robot IFactory<Robot>.Create()
+    {
+        return _robot ??= new Robot("1", 2);
+    }
 }
