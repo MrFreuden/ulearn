@@ -11,7 +11,12 @@ namespace func.brainfuck
 			vm.RegisterCommand('.', b => { });
 			vm.RegisterCommand('+', b => {});
 			vm.RegisterCommand('-', b => {});
-			//...
-		}
-	}
+            vm.RegisterCommand('>', b => { });
+            vm.RegisterCommand('<', b => { });
+            //vm.RegisterCommand('', b => { });
+			//A-Z, a-z, 0-9	сохранить ASCII-код этого символа в байт памяти, на который указывает указатель
+
+
+        }
+    }
 }
