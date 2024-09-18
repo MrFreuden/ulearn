@@ -19,10 +19,9 @@ public static class ExtensionsTask
         if (count == 0)
 			throw new InvalidOperationException("Sequence contains no elements");
 
-		var q = count % 2 == 0 
+        return count % 2 == 0 
 			? sortedItems.Skip(count / 2 - 1).Take(2).Average() 
 			: sortedItems.Skip(count / 2).Take(1).First();
-		return q;
 	}
 
 	/// <returns>
