@@ -50,7 +50,35 @@ public class ParsingTests
 		Assert.That(dict[42], Is.EqualTo(new SlideRecord(42, SlideType.Exercise, "title")));
 	}
 
-	[Test]
+    [Test]
+    public void ParseBadSlide()
+    {
+        var dict = ParsingTask.ParseSlideRecords(new[] { 
+			slidesHeaderLine, 
+            "x;x;title",
+			"x;exercise;title",
+            "0;x;title",
+            "1;exerciseBad;title",
+            "2;exeRcise;title",
+            "3;;title",
+        });
+        Assert.That(dict, Has.Count.EqualTo(1));
+        Assert.That(dict[2], Is.EqualTo(new SlideRecord(2, SlideType.Exercise, "title")));
+    }
+
+    [Test]
+    public void ParseTwoSameSlide()
+    {
+        var dict = ParsingTask.ParseSlideRecords(new[] { 
+			slidesHeaderLine, 
+			"42;exercise;title",
+            "42;exercise;title2"
+        });
+        Assert.That(dict, Has.Count.EqualTo(1));
+        Assert.That(dict[42], Is.EqualTo(new SlideRecord(42, SlideType.Exercise, "title")));
+    }
+
+    [Test]
 	public void ParseVisits_Fails_OnIncorrectLine()
 	{
 		var lines = new[] { visitsHeaderLine, "very wrong line!" };
@@ -73,6 +101,8 @@ public class ParsingTests
 		Assert.That(exception.Message, Is.EqualTo("Wrong line [1;2;2000-13-30;12:00:00]"));
 	}
 
+
+
 	[Test]
 	public void ParseVisits_Fails_OnIncorrectTime()
 	{
@@ -83,8 +113,29 @@ public class ParsingTests
 
 		Assert.That(exception.Message, Is.EqualTo("Wrong line [1;2;2000-01-30;27:99:00]"));
 	}
+    [Test]
+    public void ParseVisits_Fails_OnNonExistentSlideId()
+    {
+        var lines = new[]
+        {
+			visitsHeaderLine,
+			"1;999;2000-01-30;12:00:00" // SlideId 999 не существует в словаре slides
+		};
 
-	[Test]
+        var slides = new Dictionary<int, SlideRecord>
+		{
+			{ 2, new SlideRecord(2, SlideType.Quiz, "quiz slide") },
+			{ 3, new SlideRecord(3, SlideType.Exercise, "exercise slide") },
+			{ 4, new SlideRecord(4, SlideType.Theory, "theory slide") }
+		};
+
+        var exception = Assert.Throws<FormatException>(() =>
+            ParsingTask.ParseVisitRecords(lines, slides).ToList()
+        );
+
+        Assert.That(exception.Message, Is.EqualTo("Wrong line [1;999;2000-01-30;12:00:00]"));
+    }
+    [Test]
 	public void ParseVisits()
 	{
 		var visits = ParsingTask.ParseVisitRecords(
