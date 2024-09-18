@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace linq_slideviews;
@@ -11,7 +12,18 @@ public class ParsingTask
 	/// <remarks>Метод должен пропускать некорректные строки, игнорируя их</remarks>
 	public static IDictionary<int, SlideRecord> ParseSlideRecords(IEnumerable<string> lines)
 	{
-		throw new NotImplementedException();
+		var s = lines
+			.Skip(1)
+			.Where(line => !string.IsNullOrEmpty(line) && char.IsDigit(line[0]))
+			.Select(line => line.Split(';'))
+			.Select(arr => arr
+				.Select((line, index) => index == 1 ? char.ToUpper(line[0]) + line.Substring(1) : line)
+				.ToArray())
+			.Where(arr => arr.Length == 3)
+			.Select(arr => new SlideRecord(int.Parse(arr[0]), (SlideType)Enum.Parse(typeof(SlideType), arr[1]), arr[2]))
+			.ToDictionary(g => g.SlideId, g => g);
+		;
+		return s;
 	}
 
 	/// <param name="lines">все строки файла, которые нужно распарсить. Первая строка — заголовочная.</param>
