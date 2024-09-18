@@ -8,6 +8,13 @@ public class StatisticsTask
 {
 	public static double GetMedianTimePerSlide(List<VisitRecord> visits, SlideType slideType)
 	{
-		throw new NotImplementedException();
+		var s = visits
+			.Where(visit => visit.SlideType == slideType)
+			.OrderBy(visit => Tuple.Create(visit.UserId, visit.DateTime))
+			
+			//.ToList()
+            ;
+
+		return 0.0;
 	}
 }
