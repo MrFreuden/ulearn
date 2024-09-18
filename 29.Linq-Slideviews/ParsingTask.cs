@@ -15,22 +15,23 @@ public class ParsingTask
         return lines
 			.Skip(1)
 			.Where(line => !string.IsNullOrEmpty(line) && char.IsDigit(line[0]))
-			.Select(line => line.Split(';'))
-			.Select(arr =>
+			.SelectMany(line =>
 			{
-				var id = int.Parse(arr[0]);
-				var typeString = char.ToUpper(arr[1][0]) + arr[1].Substring(1);
+				var arr = line.Split(';');
+                var id = int.Parse(arr[0]);
+                var typeString = char.ToUpper(arr[1][0]) + arr[1].Substring(1);
 
-                if (Enum.TryParse(typeString, out SlideType slideType))
+                if (!Enum.TryParse(typeString, out SlideType slideType))
                 {
-                    return new { Id = id, SlideType = slideType, Title = arr[2] };
+                    return Enumerable.Empty<SlideRecord>();
+
                 }
                 else
                 {
-                    throw new ArgumentException($"Некорректное значение SlideType: {typeString}");
+                    return new[] { new SlideRecord(id, slideType, arr[2]) };
                 }
             })
-            .ToDictionary(group => group.Id, group => new SlideRecord(group.Id, group.SlideType, group.Title));
+            .ToDictionary(slide => slide.SlideId, slide => slide);
 	}
 
 	/// <param name="lines">все строки файла, которые нужно распарсить. Первая строка — заголовочная.</param>
