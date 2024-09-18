@@ -14,25 +14,17 @@ public class ParsingTask
     {
         return lines
             .Skip(1)
-            .Where(line => !string.IsNullOrEmpty(line) && char.IsDigit(line[0]))
-            .SelectMany(line =>
+            .Select(line =>
             {
                 var arr = line.Split(';');
-                if (arr.Length != 3)
-                    return Enumerable.Empty<SlideRecord>();
+                if (arr.Length != 3 
+                || !int.TryParse(arr[0], out int id)
+                || !Enum.TryParse(arr[1], true, out SlideType slideType))
+                    return null;
 
-                if (!int.TryParse(arr[0], out int id))
-                    return Enumerable.Empty<SlideRecord>();
-
-                if (arr[1].Length == 0)
-                    return Enumerable.Empty<SlideRecord>();
-
-                var typeString = char.ToUpper(arr[1][0]) + arr[1].Substring(1);
-                if (!Enum.TryParse(typeString, out SlideType slideType))
-                    return Enumerable.Empty<SlideRecord>();
-
-                return new[] { new SlideRecord(id, slideType, arr[2]) };
+                return new SlideRecord(id, slideType, arr[2]);
             })
+            .Where(record => record != null)
             .GroupBy(record => record.SlideId)
             .ToDictionary(slide => slide.Key, slide => slide.First());
     }
@@ -47,27 +39,17 @@ public class ParsingTask
     {
         return lines
             .Skip(1)
-            .SelectMany(line =>
+            .Select(line =>
             {
-                var arr = line.Split(';', 3);
-                if (arr.Length != 3)
+                var arr = line.Split(';');
+                if (arr.Length != 4
+                || !int.TryParse(arr[0], out int userId)
+                || !int.TryParse(arr[1], out int slideId)
+                || !DateTime.TryParseExact($"{arr[2]};{arr[3]}", "yyyy-MM-dd;HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime)
+                || !slides.TryGetValue(slideId, out var record))
                     throw new FormatException($"Wrong line [{line}]");
 
-
-                if (!int.TryParse(arr[0], out int userId))
-                    throw new FormatException($"Wrong line [{line}]");
-
-
-                if (!int.TryParse(arr[1], out int slideId))
-                    throw new FormatException($"Wrong line [{line}]");
-
-                string format = "yyyy-MM-dd;HH:mm:ss";
-                if (!DateTime.TryParseExact(arr[2], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
-                    throw new FormatException($"Wrong line [{line}]");
-
-                if (!slides.TryGetValue(slideId, out var record))
-                    throw new FormatException($"Wrong line [{line}]");
-                return new[] { new VisitRecord(userId, slideId, dateTime, record.SlideType) };
+                return new VisitRecord(userId, slideId, dateTime, record.SlideType);
             });
     }
 }

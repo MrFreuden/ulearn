@@ -72,4 +72,61 @@ public class StatisticsTests
 		var median = StatisticsTask.GetMedianTimePerSlide(visits, SlideType.Exercise);
 		Assert.AreEqual(2, median, 1e-5);
 	}
+
+    [Test]
+    public void LongAndShortVisits()
+    {
+        var time = DateTime.Now;
+        var visits = new List<VisitRecord>
+        {
+            new VisitRecord(1, 10, time, SlideType.Exercise),
+            new VisitRecord(1, 11, time + TimeSpan.FromMinutes(121), SlideType.Exercise),
+            new VisitRecord(1, 12, time + TimeSpan.FromMinutes(121.5), SlideType.Exercise)
+        };
+        var median = StatisticsTask.GetMedianTimePerSlide(visits, SlideType.Exercise);
+        Assert.AreEqual(0, median);
+    }
+
+    [Test]
+    public void DifferentSecondSlide()
+    {
+        var time = DateTime.Now;
+        var visit = new List<VisitRecord>
+        {
+            new VisitRecord(1, 10, time, SlideType.Exercise),
+            new VisitRecord(1, 11, time + TimeSpan.FromMinutes(10), SlideType.Quiz)
+        };
+        var median = StatisticsTask.GetMedianTimePerSlide(visit, SlideType.Exercise);
+        Assert.AreEqual(10, median);
+    }
+
+    [Test]
+    public void DifferentUsers()
+    {
+        var time = DateTime.Now;
+        var visit = new List<VisitRecord>
+        {
+            new VisitRecord(1, 10, time, SlideType.Exercise),
+            new VisitRecord(2, 11, time + TimeSpan.FromMinutes(10), SlideType.Exercise)
+        };
+        var median = StatisticsTask.GetMedianTimePerSlide(visit, SlideType.Exercise);
+        Assert.AreEqual(0, median);
+    }
+
+    [Test]
+    public void ShuffledVisits()
+    {
+        var time = DateTime.Now;
+        var visits = new List<VisitRecord>
+        {
+            new VisitRecord(1, 14, time + TimeSpan.FromMinutes(100), SlideType.Exercise),
+            new VisitRecord(1, 12, time + TimeSpan.FromMinutes(4), SlideType.Exercise),
+            new VisitRecord(1, 10, time, SlideType.Exercise),
+            new VisitRecord(1, 11, time + TimeSpan.FromMinutes(2), SlideType.Exercise),
+            new VisitRecord(1, 13, time + TimeSpan.FromMinutes(8), SlideType.Quiz)
+
+        };
+        var median = StatisticsTask.GetMedianTimePerSlide(visits, SlideType.Exercise);
+        Assert.AreEqual(2, median, 1e-5);
+    }
 }
