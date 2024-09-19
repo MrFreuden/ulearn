@@ -129,4 +129,20 @@ public class StatisticsTests
         var median = StatisticsTask.GetMedianTimePerSlide(visits, SlideType.Exercise);
         Assert.AreEqual(2, median, 1e-5);
     }
+
+    [Test]
+    public void TwoShuffledUsers()
+    {
+        var time = DateTime.Now;
+        var visits = new List<VisitRecord>
+        {
+            new VisitRecord(2, 13, time + TimeSpan.FromMinutes(100), SlideType.Exercise),
+            new VisitRecord(1, 10, time, SlideType.Exercise),
+            new VisitRecord(2, 14, time + TimeSpan.FromMinutes(110), SlideType.Exercise),
+            new VisitRecord(1, 11, time + TimeSpan.FromMinutes(2), SlideType.Exercise),
+            new VisitRecord(2, 15, time + TimeSpan.FromMinutes(120), SlideType.Exercise)
+        };
+        var median = StatisticsTask.GetMedianTimePerSlide(visits, SlideType.Exercise);
+        Assert.AreEqual(10, median, 1e-5);
+    }
 }
