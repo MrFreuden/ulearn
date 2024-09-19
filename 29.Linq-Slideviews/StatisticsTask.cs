@@ -8,20 +8,14 @@ public class StatisticsTask
 {
 	public static double GetMedianTimePerSlide(List<VisitRecord> visits, SlideType slideType)
 	{
-		var s = visits
-			//.Where(visit => visit.SlideType == slideType)
+		var times = visits
 			.OrderBy(visit => Tuple.Create(visit.UserId, visit.DateTime))
-			.GroupBy(x => x, x => x.DateTime)
-			
-			//.Select(x => x.Bigrams())
-			
-			//.SelectMany(x => x)
-			//.Select(x => (x.Second - x.First).TotalMinutes)
-			//.Where(x => x > 1 && x < 120)
-			
-            ;
+			.GroupBy(visit => visit.UserId)
+			.SelectMany(group => group.Bigrams())
+			.Where(bigram => bigram.First.SlideType.Equals(slideType))
+			.Select(bigram => (bigram.Second.DateTime - bigram.First.DateTime).TotalMinutes)
+			.Where(time => time >= 1 && time <= 120);
 
-		return 0.0;
-        // return s.Any() ? s.Median() : 0;
+         return times.Any() ? times.Median() : 0;
 	}
 }
