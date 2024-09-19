@@ -11,10 +11,13 @@ public class StatisticsTask
 		var s = visits
 			.Where(visit => visit.SlideType == slideType)
 			.OrderBy(visit => Tuple.Create(visit.UserId, visit.DateTime))
+			.GroupBy(x => x.UserId, x => x.DateTime)
+			.Select(x => x.Bigrams())
+			.SelectMany(x => x)
 			
-			//.ToList()
             ;
+		var q = s.Select(x => x.Second - x.First);
 
-		return 0.0;
+        return 0.0;
 	}
 }
