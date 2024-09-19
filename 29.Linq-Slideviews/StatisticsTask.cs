@@ -14,10 +14,11 @@ public class StatisticsTask
 			.GroupBy(x => x.UserId, x => x.DateTime)
 			.Select(x => x.Bigrams())
 			.SelectMany(x => x)
-			
+			.Select(x => (x.Second - x.First).TotalMinutes)
+			.Where(x => x > 1 && x < 120)
+			.Median()
             ;
-		var q = s.Select(x => x.Second - x.First);
 
-        return 0.0;
+        return s;
 	}
 }
