@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Dungeon.Dungeons;
 using NUnit.Framework;
@@ -144,7 +145,25 @@ public class Bfs_Should
 		AssertPaths(paths, map, new[] { 170, 156, 144, 137, 84 });
 	}
 
-	private static List<Point>[] GetPaths(Map map)
+    [Test, Order(8)]
+    [TestCase(500, 40, 50)]
+    [TestCase(500, 81, 103)]
+    public void Large_Map_Filled_With_Chests(int timeout, int width, int height)
+    {
+        var lines = new string[height];
+        lines[0] = $"P{new string('C', width - 1)}";
+        foreach (var i in Enumerable.Range(1, height - 1))
+        {
+            lines[i] = new string('C', width);
+        }
+        var miniMap = Map.FromLines(lines);
+        var sw = Stopwatch.StartNew();
+        var paths = GetPaths(miniMap);
+        sw.Stop();
+        Assert.IsTrue(sw.ElapsedMilliseconds <= timeout, $"Actual time: {sw.ElapsedMilliseconds}, expected {timeout}");
+    }
+
+    private static List<Point>[] GetPaths(Map map)
 	{
 		var paths = BfsTask.FindPaths(map, map.InitialPosition, map.Chests)
 			.Select(x => x.ToList())
