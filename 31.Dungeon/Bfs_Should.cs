@@ -151,10 +151,10 @@ public class Bfs_Should
     public void Large_Map_Filled_With_Chests(int timeout, int width, int height)
     {
         var lines = new string[height];
-        lines[0] = $"P{new string('C', width - 1)}";
+        lines[0] = $"P{new string('0', width - 1)}";
         foreach (var i in Enumerable.Range(1, height - 1))
         {
-            lines[i] = new string('C', width);
+            lines[i] = new string('0', width);
         }
         var miniMap = Map.FromLines(lines);
         var sw = Stopwatch.StartNew();
