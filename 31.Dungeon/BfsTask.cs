@@ -42,7 +42,7 @@ public class BfsTask
         };
 
         return points
-            .Where(point => map.InBounds(point.Value))
+            .Where(point => map.InBounds(point.Value) && point.Value != current.Previous?.Value)
             .Where(point => map.Dungeon[point.Value.X, point.Value.Y] is MapCell.Empty);
     }
 }
