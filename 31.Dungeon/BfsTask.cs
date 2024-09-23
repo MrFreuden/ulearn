@@ -5,24 +5,31 @@ namespace Dungeon;
 
 public class BfsTask
 {
+    private static readonly List<Point> _direction = new()
+    {
+        new Point(1, 0),
+        new Point(-1, 0),
+        new Point(0, 1),
+        new Point(0, -1)
+    };
+
     public static IEnumerable<SinglyLinkedList<Point>> FindPaths(Map map, Point start, Chest[] chests)
     {
-        var visited = new HashSet<Point>();
+        var visited = new HashSet<Point>() { start };
+        var chestsPoint = new HashSet<Point>(chests.Select(chest => chest.Location));
         var queue = new Queue<SinglyLinkedList<Point>>();
-        var startLink = new SinglyLinkedList<Point>(start);
-        visited.Add(start);
-        queue.Enqueue(startLink);
+        queue.Enqueue(new SinglyLinkedList<Point>(start));
+
         while (queue.Count != 0)
         {
             var node = queue.Dequeue();
 
-            foreach (var nextNode in GetNeibors(map, node))
+            foreach (var nextNode in GetNeighbors(map, node))
             {
-                if (!visited.Contains(nextNode.Value))
+                if (visited.Add(nextNode.Value))
                 {
-                    visited.Add(nextNode.Value);
                     queue.Enqueue(nextNode);
-                    if (chests.Any(x => x.Location == nextNode.Value))
+                    if (chestsPoint.Contains(nextNode.Value))
                     {
                         yield return nextNode;
                     }
@@ -31,18 +38,11 @@ public class BfsTask
         }
     }
 
-    private static IEnumerable<SinglyLinkedList<Point>> GetNeibors(Map map, SinglyLinkedList<Point> current)
+    private static IEnumerable<SinglyLinkedList<Point>> GetNeighbors(Map map, SinglyLinkedList<Point> current)
     {
-        var points = new List<SinglyLinkedList<Point>>()
-        {
-            new(new Point(current.Value.X + 1, current.Value.Y), current),
-            new(new Point(current.Value.X - 1, current.Value.Y), current),
-            new(new Point(current.Value.X, current.Value.Y + 1), current),
-            new(new Point(current.Value.X, current.Value.Y - 1), current)
-        };
-
-        return points
-            .Where(point => map.InBounds(point.Value) && point.Value != current.Previous?.Value)
+        return _direction
+            .Select(x => new SinglyLinkedList<Point>(x + current.Value, current))
+            .Where(point => map.InBounds(point.Value) && !point.Value.Equals(current.Previous?.Value))
             .Where(point => map.Dungeon[point.Value.X, point.Value.Y] is MapCell.Empty);
     }
 }
