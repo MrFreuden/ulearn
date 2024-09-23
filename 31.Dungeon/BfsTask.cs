@@ -40,7 +40,7 @@ public class BfsTask
 
     private static IEnumerable<SinglyLinkedList<Point>> GetNeighbors(Map map, SinglyLinkedList<Point> current)
     {
-        return _direction
+        return Walker.PossibleDirections
             .Select(x => new SinglyLinkedList<Point>(x + current.Value, current))
             .Where(point => map.InBounds(point.Value) && !point.Value.Equals(current.Previous?.Value))
             .Where(point => map.Dungeon[point.Value.X, point.Value.Y] is MapCell.Empty);
