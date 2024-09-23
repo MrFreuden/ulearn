@@ -5,14 +5,6 @@ namespace Dungeon;
 
 public class BfsTask
 {
-    private static readonly List<Point> _direction = new()
-    {
-        new Point(1, 0),
-        new Point(-1, 0),
-        new Point(0, 1),
-        new Point(0, -1)
-    };
-
     public static IEnumerable<SinglyLinkedList<Point>> FindPaths(Map map, Point start, Chest[] chests)
     {
         var visited = new HashSet<Point>() { start };
