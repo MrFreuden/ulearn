@@ -30,9 +30,9 @@ public class DungeonTask
 
     private static IEnumerable<Tuple<IEnumerable<Point>, SinglyLinkedList<Point>, byte>> GetCombinedPaths(Map map)
     {
+        var startToChest = BfsTask.FindPaths(map, map.InitialPosition, map.Chests);
+        var endToChest = BfsTask.FindPaths(map, map.Exit, map.Chests);
         var chestsPoint = map.Chests.ToDictionary(chest => chest.Location, chest => chest);
-        var startToChest = BfsTask.FindPaths(map, map.InitialPosition, chestsPoint.Values.ToArray());
-        var endToChest = BfsTask.FindPaths(map, map.Exit, chestsPoint.Values.ToArray());
 
         var combinedPaths = startToChest.Join(endToChest,
                             startPath => startPath.First(),
