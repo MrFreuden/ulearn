@@ -16,13 +16,13 @@ public class Map
 		Chests = chests;
 	}
 
-	public static Map FromText(string text)
-	{
-		var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-		return FromLines(lines);
-	}
+    public static Map FromText(string text)
+    {
+        var lines = text.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        return FromLines(lines);
+    }
 
-	public static Map FromLines(string[] lines)
+    public static Map FromLines(string[] lines)
 	{
 		var dungeon = new MapCell[lines[0].Length, lines.Length];
 		var players = new List<Point>();
