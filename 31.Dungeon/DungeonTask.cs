@@ -45,7 +45,7 @@ public class DungeonTask
 
     private static MoveDirection[] FindPathWithoutChest(Map map)
     {
-        var directPath = BfsTask.FindPaths(map, map.Exit, new Chest[] { new Chest(map.InitialPosition, 0) })
+        var directPath = BfsTask.FindPaths(map, map.Exit, new Chest[] { new(map.InitialPosition, 0) })
                                 .FirstOrDefault();
         if (directPath == null) return Array.Empty<MoveDirection>();
 
