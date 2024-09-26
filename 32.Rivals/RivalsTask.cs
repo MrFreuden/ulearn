@@ -58,6 +58,7 @@ public class RivalsTask
         }
     }
 
+
     private static int CalculateDistance(double x1, double y1, double x2, double y2)
     {
         return (int)(Math.Abs(x2 - x1) + Math.Abs(y2 - y1));
