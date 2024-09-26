@@ -8,31 +8,30 @@ public class RivalsTask
 {
 	public static IEnumerable<OwnedLocation> AssignOwners(Map map)
 	{
+        var i = 0;
         var visitedPoints = new HashSet<Point>();
-        var playersQueue = new Queue<Point>(map.Players);
         var chestsPoint = map.Chests.ToDictionary(chest => chest);
-        var playersVisitedPoints = map.Players
-            .ToDictionary(player => player, player => {
+        var playersQueue = new Queue<(Point Player, int Index, Queue<Point> PlayerQueue)>(
+            map.Players
+            .Select(player => 
+            {
                 var queue = new Queue<Point>();
                 queue.Enqueue(player);
-                return queue;
-            });
-        var i = 0;
-        var indexes = map.Players
-            .ToDictionary(player => player, player => i++);
+                return (Player: player, Index: i++, PlayerQueue: queue);
+            } ));
 
         foreach (var player in playersQueue)
         {
-            yield return new OwnedLocation(indexes[player], player, 0);
-            visitedPoints.Add(player);
+            yield return new OwnedLocation(player.Index, player.Player, 0);
+            visitedPoints.Add(player.Player);
         }
-        
+
         while (playersQueue.Count != 0)
         {
             var currentPlayer = playersQueue.Dequeue();
 
-            var currentQ = new Queue<Point>(playersVisitedPoints[currentPlayer]);
-            playersVisitedPoints[currentPlayer].Clear();
+            var currentQ = new Queue<Point>(currentPlayer.PlayerQueue);
+            currentPlayer.PlayerQueue.Clear();
 
             while (currentQ.Count != 0)
             {
@@ -41,58 +40,18 @@ public class RivalsTask
                 {
                     if (visitedPoints.Contains(nextPoint)) continue;
 
-                    yield return new OwnedLocation(indexes[currentPlayer], nextPoint,
-                        CalculateDistance(currentPlayer.X, currentPlayer.Y, nextPoint.X, nextPoint.Y));
+                    yield return new OwnedLocation(currentPlayer.Index, nextPoint,
+                        CalculateDistance(currentPlayer.Player.X, currentPlayer.Player.Y, nextPoint.X, nextPoint.Y));
                     visitedPoints.Add(nextPoint);
 
                     if (!chestsPoint.TryGetValue(nextPoint, out var chestPoint))
                     {
-                        playersVisitedPoints[currentPlayer].Enqueue(nextPoint);
+                        currentPlayer.PlayerQueue.Enqueue(nextPoint);
                     }
                 }
             }
-            
-            if (playersVisitedPoints[currentPlayer].Count > 0)
-            {
-                playersQueue.Enqueue(currentPlayer);
-            }
-        }
-    }
 
-    public static IEnumerable<OwnedLocation> FindPaths(Map map)
-    {
-        var visitedPoints = new HashSet<Point>();
-        var playersQueue = new Queue<Point>(map.Players);
-        var chestsPoint = map.Chests.ToDictionary(chest => chest);
-        var playersVisitedPoints = map.Players
-            .ToDictionary(player => player, player => {
-                var queue = new Queue<Point>();
-                queue.Enqueue(player);
-                return queue;
-            });
-        var i = 0;
-        var indexes = map.Players
-            .ToDictionary(player => player, player => i++);
-
-
-        while (playersQueue.Count != 0)
-        {
-            var currentPlayer = playersQueue.Dequeue();
-            var point = playersVisitedPoints[currentPlayer].Dequeue();
-            foreach (var nextPoint in GetNeighbors(map, point))
-            {
-                if (visitedPoints.Contains(nextPoint)) continue;
-
-                yield return new OwnedLocation(indexes[currentPlayer], nextPoint, 
-                    CalculateDistance(currentPlayer.X, currentPlayer.Y, nextPoint.X, nextPoint.Y));
-                visitedPoints.Add(nextPoint);
-
-                if (!chestsPoint.TryGetValue(nextPoint, out var chestPoint))
-                {
-                    playersVisitedPoints[currentPlayer].Enqueue(nextPoint);
-                }
-            }
-            if (playersVisitedPoints[currentPlayer].Count > 0)
+            if (currentPlayer.PlayerQueue.Count > 0)
             {
                 playersQueue.Enqueue(currentPlayer);
             }
