@@ -17,25 +17,16 @@ public class GreedyPathFinder : IPathFinder
 		while (state.Scores != state.Goal)
 		{
 			var pathWithCost = pathFinder.GetPathsByDijkstra(state, state.Position, chests);
-			if (!pathWithCost.Any())
-            {
-				return new List<Point>();
-            }
-            var path = pathWithCost.First().Path;
-			var cost = pathWithCost.First().Cost;
-            path.RemoveAt(0);
-			if (state.Energy - cost < 0)
-			{
-                return new List<Point>();
-            }
-			state.Energy -= cost;
-            state.Position = path.Last();
-			fullPath.AddRange(path);
-			chests.Remove(path.Last());
-			state.Scores++;
+			var path = pathWithCost.FirstOrDefault();
 
+			if (path == default || state.Energy - path.Cost < 0) return new List<Point>(); 
+
+			state.Energy -= path.Cost;
+            state.Position = path.End;
+			fullPath.AddRange(path.Path.Skip(1));
+			chests.Remove(path.End);
+			state.Scores++;
         }
-		
 		return fullPath;
 	}
 }
