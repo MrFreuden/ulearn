@@ -1,6 +1,4 @@
-using DynamicData;
 using Greedy.Architecture;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,7 +26,6 @@ public class DijkstraPathFinder
         IEnumerable<Point> targets)
     {
         var targetsSet = new HashSet<Point>(targets);
-        var visited = new HashSet<Point>();
         var track = new Dictionary<Point, DijkstraData>
         {
             [start] = new DijkstraData { Price = 0, Previous = null }
@@ -39,19 +36,16 @@ public class DijkstraPathFinder
         while (queue.Count > 0)
         {
             var current = queue.Dequeue();
-            if (!visited.Add(current)) continue;
 
             if (targetsSet.Contains(current))
             {
-                var path = BuildPath(track, current);
-                yield return new PathWithCost((int)track[current].Price, path.ToArray());
+                yield return new PathWithCost((int)track[current].Price, BuildPath(track, current).ToArray());
                 targetsSet.Remove(current);
                 if (targetsSet.Count == 0) yield break;
             }
 
             foreach (var e in GetIncidentEdges(state, current))
             {
-                if (visited.Contains(e)) continue;
                 var currentPrice = track[current].Price + state.CellCost[e.X, e.Y];
                 if (!track.ContainsKey(e) || track[e].Price > currentPrice)
                 {
