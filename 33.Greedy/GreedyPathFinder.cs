@@ -8,9 +8,6 @@ public class GreedyPathFinder : IPathFinder
 {
 	public List<Point> FindPathToCompleteGoal(State state)
 	{
-		if (state.Chests.Count == 0 || state.InitialEnergy == 0 || state.Goal == 0)
-			return new List<Point>();
-
 		var chests = state.Chests;
 		var pathFinder = new DijkstraPathFinder();
 		var fullPath = new List<Point>();
