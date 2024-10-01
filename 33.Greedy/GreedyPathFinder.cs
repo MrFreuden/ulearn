@@ -8,33 +8,32 @@ public class GreedyPathFinder : IPathFinder
 {
 	public List<Point> FindPathToCompleteGoal(State state)
 	{
-		if (state.Chests.Count == 0 || state.InitialEnergy == 0 ||state.Goal == 0)
+		if (state.Chests.Count == 0 || state.InitialEnergy == 0 || state.Goal == 0)
 			return new List<Point>();
-		var s = state.Scores;
+
 		var chests = state.Chests;
-		var goal = state.Goal;
 		var pathFinder = new DijkstraPathFinder();
 		var fullPath = new List<Point>();
-		while (goal != 0)
+		while (state.Scores != state.Goal)
 		{
-            var pathWithCost = pathFinder.GetPathsByDijkstra(state, state.Position, chests).First();
-            var path = pathWithCost.Path;
-			var cost = pathWithCost.Cost;
-			chests.Remove(path.Last());
-            if (state.Energy < cost)
+			var pathWithCost = pathFinder.GetPathsByDijkstra(state, state.Position, chests);
+			if (!pathWithCost.Any())
             {
+				return new List<Point>();
+            }
+            var path = pathWithCost.First().Path;
+			var cost = pathWithCost.First().Cost;
+            path.RemoveAt(0);
+			if (state.Energy - cost < 0)
+			{
                 return new List<Point>();
             }
-            path.RemoveAt(0);
 			state.Energy -= cost;
-            
             state.Position = path.Last();
 			fullPath.AddRange(path);
-			goal--;
-            if (chests.Count == 0 && goal > 0)
-            {
-                return new List<Point>();
-            }
+			chests.Remove(path.Last());
+			state.Scores++;
+
         }
 		
 		return fullPath;
