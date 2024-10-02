@@ -10,52 +10,76 @@ public class NotGreedyPathFinder : IPathFinder
     public List<Point> FindPathToCompleteGoal(State state)
     {
         var chests = state.Chests.ToList();
-        var result = Backtrack(state, state.Position, chests, new List<Point>(), (new List<Point>(), Int32.MinValue));
+        var result = Backtrack(state, state.Position, chests, new List<Point>(), new DijkstraPathFinder(), (new List<Point>(), Int32.MinValue));
         return result.bestPath;
     }
 
-    public (List<Point> bestPath, int collectedChests) Backtrack(State state, Point position, List<Point> chests, List<Point> fullPath, 
-        (List<Point> bestPath, int collectedChests) res)
+    public (List<Point> bestPath, int collectedChests) Backtrack(
+        State state, 
+        Point position, 
+        List<Point> chests, 
+        List<Point> fullPath, 
+        DijkstraPathFinder pathFinder,
+        (List<Point> bestPath, int collectedChests) result
+        )
     {
-        if (chests.Count == 0)
+        if (chests.Count == 0
+            || state.Scores + chests.Count < result.collectedChests || state.Energy <= 0)
         {
-            return res;
+            return result;
         }
 
-        var pathFinder = new DijkstraPathFinder();
-        var pathWithCost = pathFinder.GetPathsByDijkstra(state, position, chests);
-        var costs = pathWithCost.Select(x => x.Cost).ToList();
+        var pathsWithCost = pathFinder.GetPathsByDijkstra(state, position, chests);
         
-
-        foreach (var path in pathWithCost)
+        foreach (var pathWithCost in pathsWithCost)
         {
-            var nextMinCost = costs.FirstOrDefault();
-            nextMinCost = nextMinCost == 0 ? Int32.MaxValue : nextMinCost;
-            if (nextMinCost > state.Energy)
-            {
-                return res;
-            }
-            state.Energy -= path.Cost;
-            state.Position = path.End;
-            chests.Remove(path.End);
-            state.Scores++;
-            var fullPathCount = fullPath.Count;
-            fullPath.AddRange(path.Path.Skip(1));
-            costs.RemoveAt(0);
-            if (res.collectedChests < state.Scores)
-            {
-                res.collectedChests = state.Scores;
-                res.bestPath = new List<Point>(fullPath);
-            }
-            res = Backtrack(state, state.Position, chests, fullPath, res);
 
-            state.Energy += path.Cost;
-            state.Position = position;
-            chests.Add(path.End);
-            state.Scores--;
-            fullPath.RemoveRange(fullPathCount, path.Path.Count - 1);
+            if (pathWithCost.Cost > state.Energy 
+                || state.Scores + chests.Count < result.collectedChests)
+            {
+                break;
+            }
+
+            UpdateStateForPath(state, pathWithCost);
+            
+            chests.Remove(pathWithCost.End);
+
+            var fullPathCount = fullPath.Count;
+            fullPath.AddRange(pathWithCost.Path.Skip(1));
+
+            if (result.collectedChests < state.Scores)
+            {
+                result.collectedChests = state.Scores;
+                result.bestPath = new List<Point>(fullPath);
+            }
+
+            result = Backtrack(state, state.Position, chests, fullPath, pathFinder, result);
+
+            RestoreStateAfterPath(state, pathWithCost, position);
+            
+            chests.Add(pathWithCost.End);
+
+            fullPath.RemoveRange(fullPathCount, pathWithCost.Path.Count - 1);
+            if (result.collectedChests == chests.Count)
+            {
+                return result;
+            }
         }
 
-        return res;
+        return result;
+    }
+
+    private void UpdateStateForPath(State state, PathWithCost path)
+    {
+        state.Energy -= path.Cost;
+        state.Position = path.End;
+        state.Scores++;
+    }
+
+    private void RestoreStateAfterPath(State state, PathWithCost path, Point position)
+    {
+        state.Energy += path.Cost;
+        state.Position = position;
+        state.Scores--;
     }
 }
