@@ -10,7 +10,8 @@ public class NotGreedyPathFinder_Should
 	[TestCase("not_greedy_no_walls_3")]
 	[TestCase("not_greedy_no_walls_4")]
 	[TestCase("not_greedy_maze_1")]
-	public void WinGame_With_State(string stateName)
+    [TestCase("Map17x17with8chests")]
+    public void WinGame_With_State(string stateName)
 	{
 		var controller =
 			TestsHelper.LoadStateFromInputData_And_MoveThroughPath(

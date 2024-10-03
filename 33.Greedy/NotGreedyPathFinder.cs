@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Greedy.Architecture;
 
 namespace Greedy;
@@ -10,8 +11,9 @@ public class NotGreedyPathFinder : IPathFinder
     public List<Point> FindPathToCompleteGoal(State state)
     {
         var chests = state.Chests.ToList();
-        var result = Backtrack(state, state.Position, chests, new List<Point>(), new DijkstraPathFinder(), (new List<Point>(), Int32.MinValue));
-        return result.bestPath;
+        var (bestPath, _) = Backtrack(state, state.Position, chests, 
+                                            new List<Point>(), new DijkstraPathFinder(), (new List<Point>(), Int32.MinValue));
+        return bestPath;
     }
 
     public (List<Point> bestPath, int collectedChests) Backtrack(
@@ -23,8 +25,7 @@ public class NotGreedyPathFinder : IPathFinder
         (List<Point> bestPath, int collectedChests) result
         )
     {
-        if (chests.Count == 0
-            || state.Scores + chests.Count < result.collectedChests || state.Energy <= 0)
+        if (ShouldTerminateBacktrack(state, chests, result))
         {
             return result;
         }
@@ -33,40 +34,30 @@ public class NotGreedyPathFinder : IPathFinder
         
         foreach (var pathWithCost in pathsWithCost)
         {
+            if (ShouldSkipPath(pathWithCost, state)) break;
 
-            if (pathWithCost.Cost > state.Energy 
-                || state.Scores + chests.Count < result.collectedChests)
-            {
-                break;
-            }
-
-            UpdateStateForPath(state, pathWithCost);
+            ProcessPath(state, pathWithCost, chests, fullPath);
             
-            chests.Remove(pathWithCost.End);
-
-            var fullPathCount = fullPath.Count;
-            fullPath.AddRange(pathWithCost.Path.Skip(1));
-
-            if (result.collectedChests < state.Scores)
-            {
-                result.collectedChests = state.Scores;
-                result.bestPath = new List<Point>(fullPath);
-            }
+            result = TryUpdateResult(state, fullPath, result);
 
             result = Backtrack(state, state.Position, chests, fullPath, pathFinder, result);
 
-            RestoreStateAfterPath(state, pathWithCost, position);
-            
-            chests.Add(pathWithCost.End);
-
-            fullPath.RemoveRange(fullPathCount, pathWithCost.Path.Count - 1);
-            if (result.collectedChests == chests.Count)
-            {
-                return result;
-            }
+            RestoreStateAfterPath(state, pathWithCost, chests, fullPath);
         }
 
         return result;
+    }
+
+    private bool ShouldTerminateBacktrack(State state, List<Point> chests, (List<Point> bestPath, int collectedChests) result) => 
+        chests.Count == 0 || state.Scores + chests.Count <= result.collectedChests;
+    
+    private bool ShouldSkipPath(PathWithCost pathWithCost, State state) => pathWithCost.Cost > state.Energy;
+
+    private void ProcessPath(State state, PathWithCost pathWithCost, List<Point> chests, List<Point> fullPath)
+    {
+        UpdateStateForPath(state, pathWithCost);
+        chests.Remove(pathWithCost.End);
+        fullPath.AddRange(pathWithCost.Path.Skip(1));
     }
 
     private void UpdateStateForPath(State state, PathWithCost path)
@@ -76,10 +67,27 @@ public class NotGreedyPathFinder : IPathFinder
         state.Scores++;
     }
 
-    private void RestoreStateAfterPath(State state, PathWithCost path, Point position)
+    private (List<Point> bestPath, int collectedChests) TryUpdateResult(State state, List<Point> fullPath, (List<Point> bestPath, int collectedChests) result)
+    {
+        if (result.collectedChests < state.Scores)
+        {
+            result.collectedChests = state.Scores;
+            result.bestPath = new List<Point>(fullPath);
+        }
+        return result;
+    }
+
+    private void RestoreStateAfterPath(State state, PathWithCost pathWithCost, List<Point> chests, List<Point> fullPath)
+    {
+        chests.Add(pathWithCost.End);
+        fullPath.RemoveRange(fullPath.Count - (pathWithCost.Path.Count - 1), pathWithCost.Path.Count - 1);
+        RestoreStateAfterPath(state, pathWithCost);
+    }
+
+    private void RestoreStateAfterPath(State state, PathWithCost path)
     {
         state.Energy += path.Cost;
-        state.Position = position;
+        state.Position = path.Start;
         state.Scores--;
     }
 }

@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove=".gitignore" />
+    <None Remove="states-for-students\not-greedy-states\Map17x17with8chests.txt" />
     <Compile Remove="*.Initial.*" />
     <Content Include="*.Initial.*" />
     <Compile Remove="*.WrongAnswer.*" />
