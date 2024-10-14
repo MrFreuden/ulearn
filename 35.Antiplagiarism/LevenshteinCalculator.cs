@@ -20,7 +20,7 @@ public class LevenshteinCalculator
         return comparisonResults;
     }
 
-    public static double LevenshteinDistance(DocumentTokens first, DocumentTokens second)
+    private double LevenshteinDistance(DocumentTokens first, DocumentTokens second)
     {
         var opt = new double[first.Count + 1, second.Count + 1];
         for (var i = 0; i <= first.Count; ++i) opt[i, 0] = i;
