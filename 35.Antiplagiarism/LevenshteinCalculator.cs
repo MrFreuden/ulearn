@@ -12,8 +12,10 @@ public class LevenshteinCalculator
     {
         if (documents.Count <= 1) return new List<ComparisonResult>();
         
-        var documentsPairs = documents.SelectMany((fst, i) => documents.Skip(i + 1).Select(snd => (fst, snd)));
-        var comparisonResults = documentsPairs.Select(x => new ComparisonResult(x.fst, x.snd, LevenshteinDistance(x.fst, x.snd))).ToList();
+        var documentsPairs = documents.SelectMany(
+            (fst, i) => documents.Skip(i + 1).Select(snd => (fst, snd)));
+        var comparisonResults = documentsPairs.Select(
+            x => new ComparisonResult(x.fst, x.snd, LevenshteinDistance(x.fst, x.snd))).ToList();
 
         return comparisonResults;
     }
