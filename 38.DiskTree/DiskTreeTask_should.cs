@@ -12,8 +12,24 @@ public class DiskTreeTask_should
 		var result = DiskTreeTask.Solve(input);
 		CollectionAssert.AreEqual(answer, result);
 	}
-
-	[Test]
+    /*
+	 * 
+	 * 
+	 * @"WINNT\
+		  SYSTEM32\
+		   CERTSRV\
+		    CERTCO~1\
+			 X86"
+		  CONFIG",
+		  DRIVERS",
+		@"HOME", 
+		@"WIN\SOFT", 
+		@"GAMES\
+		   DRIVERS",
+	 * 
+	 * 
+	 **/
+    [Test]
 	public void Test1() { MakeTest(new List<string> { @"WINNT\SYSTEM32\CONFIG", @"GAMES", @"WINNT\DRIVERS", @"HOME", @"WIN\SOFT", @"GAMES\DRIVERS", @"WINNT\SYSTEM32\CERTSRV\CERTCO~1\X86", }, new List<string> { @"GAMES", @" DRIVERS", @"HOME", @"WIN", @" SOFT", @"WINNT", @" DRIVERS", @" SYSTEM32", @"  CERTSRV", @"   CERTCO~1", @"    X86", @"  CONFIG", }); }
 
 	[Test]
