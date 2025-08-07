@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MyPhotoshop.Convertors" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAEAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Convertors.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.Photo" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAACAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Photo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.ParameterInfo" Collapsed="true">
+    <Position X="8.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAIAAAAAQAAABAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Filters\Parameters\ParameterInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.ParametersExtensions" Collapsed="true">
+    <Position X="10.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\Parameters\ParametersExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.MainClass" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Main.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.MainWindow" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAFAAAAAAAAgAAAgIABAQIABEAAAAIAAAAABAAAAA=</HashCode>
+      <FileName>Window\MainWindow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.Filters.EmptyParameters" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\Parameters\EmptyParameters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyPhotoshop.Filters.LighteningParameters" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\Parameters\LighteningParameters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyPhotoshop.Filters.ParametrizedFilter&lt;TParameters&gt;" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Filters\ParametrizedFilter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MyPhotoshop.Filters.PixelFilter&lt;TParameters&gt;" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAEAgAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\PixelFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.Filters.RotationParameters" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Filters\Transform\RotationParameters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyPhotoshop.Filters.TransformFilter" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\Transform\TransformFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.Filters.TransformFilter&lt;TParameters&gt;" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAEAgAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Filters\Transform\TransformFilter{TParameters}.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyPhotoshop.Filters.Transform.FreeTransformer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAQAAAAAABAACAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Filters\Transform\FreeTransformer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyPhotoshop.Filters.Transform.RotateTransformer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAQAAAAAAAAACAAAAAAAAAAGAAAAAAAAA=</HashCode>
+      <FileName>Filters\Transform\RotateTransformer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Struct Name="MyPhotoshop.Pixel" Collapsed="true">
+    <Position X="5.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAIAQAAAAAIAAAAAAAAAAACAEAAQA=</HashCode>
+      <FileName>Data\Pixel.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="MyPhotoshop.IFilter" Collapsed="true">
+    <Position X="5.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Filters\IFilter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MyPhotoshop.IParametersHandler&lt;TParameters&gt;" Collapsed="true">
+    <Position X="8.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\Parameters\IParametersHandler.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MyPhotoshop.Filters.IParameters" Collapsed="true">
+    <Position X="7" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\Parameters\IParameters.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MyPhotoshop.Filters.Transform.ITransformer&lt;TParameters&gt;" Collapsed="true">
+    <Position X="10.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\Transform\ITransformer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

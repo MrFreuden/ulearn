@@ -1,0 +1,11 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia.PropertyGrid.Controls;assembly=Avalonia.PropertyGrid"
+        x:Class="FractalPainting.UI.SettingsForm"
+        SizeToContent="WidthAndHeight">
+    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto">
+        <controls:PropertyGrid Name="Settings" ShowStyle="Alphabetic" AllowQuickFilter="False" AllowToggleView="False"
+                               AllowFilter="False" />
+        <Button Grid.Row="1" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Name="CloseButton">OK</Button>
+    </Grid>
+</Window>

@@ -11,7 +11,7 @@ internal static class DragonFractalTask
 
         for (int i = 0; i < iterationsCount; i++)
         {
-            double angleInDegrees = random.Next() % 2 == 0 ? 45 : 135;
+            double angleInDegrees = double.NaN;
             double angleInRadians = ToRadians(angleInDegrees);
             (x, y) = Transform(x, y, angleInDegrees, angleInRadians);
             pixels.SetPixel(x, y);

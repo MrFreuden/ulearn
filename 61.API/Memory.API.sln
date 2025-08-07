@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memory.API", "Memory.API.csproj", "{0A1BFC86-5AA6-4529-B5E3-9784E6418550}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A1BFC86-5AA6-4529-B5E3-9784E6418550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A1BFC86-5AA6-4529-B5E3-9784E6418550}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A1BFC86-5AA6-4529-B5E3-9784E6418550}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A1BFC86-5AA6-4529-B5E3-9784E6418550}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5F1F60AE-3E79-4AD1-A662-A2E725EADE7A}
+	EndGlobalSection
+EndGlobal
